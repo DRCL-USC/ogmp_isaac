@@ -9,6 +9,7 @@
 
 import argparse
 import sys
+import yaml
 
 from omni.isaac.lab.app import AppLauncher
 
@@ -25,11 +26,19 @@ parser.add_argument("--num_envs", type=int, default=None, help="Number of enviro
 parser.add_argument("--task", type=str, default=None, help="Name of the task.")
 parser.add_argument("--seed", type=int, default=None, help="Seed used for the environment")
 parser.add_argument("--max_iterations", type=int, default=None, help="RL Policy training iterations.")
+parser.add_argument("--yaml_config", type=str, default=None, help="Path to the yaml configuration file.")
+parser.add_argument("--visualize", action="store_true", default=False, help="Visualize the environment.")
 # append RSL-RL cli arguments
 cli_args.add_rsl_rl_args(parser)
 # append AppLauncher cli args
 AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
+
+if args_cli.yaml_config:
+    yaml_config = yaml.safe_load(open(args_cli.yaml_config, 'r'))
+    if "env_name" in yaml_config:
+        args_cli.task = yaml_config["env_name"]
+        del yaml_config["env_name"]
 
 # always enable cameras to record video
 if args_cli.video:
@@ -72,12 +81,85 @@ torch.backends.cudnn.allow_tf32 = True
 torch.backends.cudnn.deterministic = False
 torch.backends.cudnn.benchmark = False
 
+from collections.abc import Iterable, Mapping
+from typing import Any
+
+# Removed error for the iterable from the original function
+from omni.isaac.lab.utils.string import string_to_callable
+
+def custom_update_class_from_dict(obj, data: dict[str, Any], _ns: str = "") -> None:
+    """Reads a dictionary and sets object variables recursively.
+
+    This function performs in-place update of the class member attributes.
+
+    Args:
+        obj: An instance of a class to update.
+        data: Input dictionary to update from.
+        _ns: Namespace of the current object. This is useful for nested configuration
+            classes or dictionaries. Defaults to "".
+
+    Raises:
+        TypeError: When input is not a dictionary.
+        ValueError: When dictionary has a value that does not match default config type.
+        KeyError: When dictionary has a key that does not exist in the default config type.
+    """
+    # Print attributes of the object
+    for key, value in data.items():
+        # key_ns is the full namespace of the key
+        key_ns = _ns + "/" + key
+        # check if key is present in the object
+        if hasattr(obj, key):
+            obj_mem = getattr(obj, key)
+            if isinstance(obj_mem, Mapping):
+                # Note: We don't handle two-level nested dictionaries. Just use configclass if this is needed.
+                # iterate over the dictionary to look for callable values
+                for k, v in obj_mem.items():
+                    if callable(v):
+                        value[k] = string_to_callable(value[k])
+                setattr(obj, key, value)
+            elif isinstance(value, Mapping):
+                # recursively call if it is a dictionary
+                custom_update_class_from_dict(obj_mem, value, _ns=key_ns)
+            elif isinstance(value, Iterable) and not isinstance(value, str):
+                # set value
+                setattr(obj, key, value)
+            elif callable(obj_mem):
+                # update function name
+                value = string_to_callable(value)
+                setattr(obj, key, value)
+            elif isinstance(value, type(obj_mem)):
+                # check that they are type-safe
+                setattr(obj, key, value)
+            else:
+                raise ValueError(
+                    f"[Config]: Incorrect type under namespace: {key_ns}."
+                    f" Expected: {type(obj_mem)}, Received: {type(value)}."
+                )
+        else:
+            raise KeyError(f"[Config]: Key not found under namespace: {key_ns}.")
 
 @hydra_task_config(args_cli.task, "rsl_rl_cfg_entry_point")
 def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agent_cfg: RslRlOnPolicyRunnerCfg):
     """Train with RSL-RL agent."""
-    # override configurations with non-hydra CLI arguments
+    # parse configuration
+    run_name = None
+    if args_cli.yaml_config:
+        run_name = yaml_config.get("run_name", None)
+        experiment_name = run_name.split('/')[0]
+        run_name = run_name.split('/')[1]
+        if run_name:
+            del yaml_config["run_name"]
+
     agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
+    if args_cli.yaml_config:
+        custom_update_class_from_dict(env_cfg, yaml_config)
+    if args_cli.visualize:
+        env_cfg.visualize_markers = True
+    if run_name:
+        agent_cfg.run_name = run_name
+    agent_cfg.experiment_name = '-'.join(args_cli.task.split('-')[:-1]).lower()+'/'+experiment_name
+    
+    # override configurations with non-hydra CLI arguments
     env_cfg.scene.num_envs = args_cli.num_envs if args_cli.num_envs is not None else env_cfg.scene.num_envs
     agent_cfg.max_iterations = (
         args_cli.max_iterations if args_cli.max_iterations is not None else agent_cfg.max_iterations
@@ -89,13 +171,11 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
 
     # specify directory for logging experiments
-    log_root_path = os.path.join("logs", "rsl_rl", agent_cfg.experiment_name)
+    log_root_path = os.path.join("logs", agent_cfg.experiment_name)
     log_root_path = os.path.abspath(log_root_path)
     print(f"[INFO] Logging experiment in directory: {log_root_path}")
     # specify directory for logging runs: {time-stamp}_{run_name}
-    log_dir = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    if agent_cfg.run_name:
-        log_dir += f"_{agent_cfg.run_name}"
+    log_dir = agent_cfg.run_name
     log_dir = os.path.join(log_root_path, log_dir)
 
     # create isaac environment
@@ -130,6 +210,9 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         print(f"[INFO]: Loading model checkpoint from: {resume_path}")
         # load previously trained model
         runner.load(resume_path)
+
+    # set seed of the environment
+    env.seed(agent_cfg.seed)
 
     # dump the configuration into log-directory
     dump_yaml(os.path.join(log_dir, "params", "env.yaml"), env_cfg)
