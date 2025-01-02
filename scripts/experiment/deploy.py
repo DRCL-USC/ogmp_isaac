@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(description="Run multiple experiments in parall
 parser.add_argument(
     "--exp_logpath",
     type=str,
-    default="/home/lkrajan/drcl_projects/ogmp_v2/ogmplm/logs/dive/2024Oct12_17-14-38_sanity_rnn_all_dir",
+    default="/home/lkrajan/drcl_projects/ogmp_v2/ogmp_isaac/logs/dive/2024Oct12_17-14-38_sanity_rnn_all_dir",
     help="path to the experiment log directory",
 )
 # parser.add_argument("--num_parallel", type=int, default=1, help="Number of parallel experiments to run (1 or 2)")

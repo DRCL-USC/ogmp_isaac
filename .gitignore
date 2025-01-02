@@ -36,5 +36,5 @@ _build
 .lastformat
 
 # Custom - BH robot assets
-exts/ogmplm/ogmplm/assets/robots/berkeley_humanoid/biped/berkeley_humanoid.usd
-exts/ogmplm/ogmplm/assets/robots/berkeley_humanoid/biped/Props
+exts/ogmp_isaac/ogmp_isaac/assets/robots/berkeley_humanoid/biped/berkeley_humanoid.usd
+exts/ogmp_isaac/ogmp_isaac/assets/robots/berkeley_humanoid/biped/Props

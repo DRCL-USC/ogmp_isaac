@@ -1,9 +1,9 @@
 import os
 import torch
 
-from ogmplm.assets import *
-from ogmplm.assets import GOAL_DEPTH, GOALPOSTS_CFG
-from ogmplm.tasks.base_env import BaseEnv, BaseEnvCfg
+from ogmp_isaac.assets import *
+from ogmp_isaac.assets import GOAL_DEPTH, GOALPOSTS_CFG
+from ogmp_isaac.tasks.base_env import BaseEnv, BaseEnvCfg
 
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import Articulation, ArticulationCfg, RigidObject, RigidObjectCfg

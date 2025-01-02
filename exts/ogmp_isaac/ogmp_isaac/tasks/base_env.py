@@ -4,11 +4,11 @@ import torch
 
 import omni.isaac.core.utils.torch as torch_utils
 
-import ogmplm.oracles as oracles
-import ogmplm.utils.observations as observations
-import ogmplm.utils.rewards as rewards
-import ogmplm.utils.terminations as terminations
-from ogmplm.assets import *
+import ogmp_isaac.oracles as oracles
+import ogmp_isaac.utils.observations as observations
+import ogmp_isaac.utils.rewards as rewards
+import ogmp_isaac.utils.terminations as terminations
+from ogmp_isaac.assets import *
 
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import Articulation, ArticulationCfg

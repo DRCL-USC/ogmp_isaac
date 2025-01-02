@@ -1,7 +1,7 @@
 import os
 import torch
 
-from ogmplm.tasks.base_env import BaseEnv, BaseEnvCfg
+from ogmp_isaac.tasks.base_env import BaseEnv, BaseEnvCfg
 
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import RigidObject, RigidObjectCfg

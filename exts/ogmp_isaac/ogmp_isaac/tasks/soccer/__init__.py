@@ -1,8 +1,7 @@
 import gymnasium as gym
 
-import ogmplm.agents as agents
+import ogmp_isaac.agents as agents
 
-from .soccer_dr_env import SoccerDREnv, SoccerDREnvCfg
 from .soccer_env import SoccerEnv, SoccerEnvCfg
 
 ##
@@ -11,7 +10,7 @@ from .soccer_env import SoccerEnv, SoccerEnvCfg
 
 gym.register(
     id="Soccer-v0",
-    entry_point="ogmplm.tasks.soccer:SoccerEnv",
+    entry_point="ogmp_isaac.tasks.soccer:SoccerEnv",
     disable_env_checker=True,
     kwargs={
         "env_cfg_entry_point": SoccerEnvCfg,

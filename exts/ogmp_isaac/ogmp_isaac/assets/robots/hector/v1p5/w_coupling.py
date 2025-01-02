@@ -1,11 +1,11 @@
 import os
 
-from ogmplm.assets.actuators import (
+from ogmp_isaac.assets.actuators import (
     HectorV1p5DCActuatorCfg,
     HectorV1p5IdealPDActuatorCfg,
     HectorV1p5ImplicitPDActuatorCfg,
 )
-from ogmplm.assets.robots.robot_cfg import RobotCfg
+from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
 
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets.articulation import ArticulationCfg

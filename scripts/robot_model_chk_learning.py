@@ -29,20 +29,20 @@ simulation_app = app_launcher.app
 ##
 # Pre-defined configs
 ##
-# from ogmplm.assets import HECTOR_V1P5_CFG , HECTOR_V1P5_MPCL, GOALPOSTS_CFG
-# from ogmplm.assets import BERKELEY_HUMANOID_CFG, BERKELEY_HUMANOID_MPCL
-# from ogmplm.assets import HECTOR_V1P5_IPD_CFG, HECTOR_V1P5_MPCL
-# from ogmplm.assets import HECTOR_V1_DC_CFG, HECTOR_V1_MPCL
-# from ogmplm.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_DC_ART_CFG as HECTOR_V1P5_DC_CFG, HECTOR_V1P5_DC_MPCL
-from ogmplm.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_DC_MPCL
-from ogmplm.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_IPD_ART_CFG as HECTOR_V1P5_IPD_CFG
+# from ogmp_isaac.assets import HECTOR_V1P5_CFG , HECTOR_V1P5_MPCL, GOALPOSTS_CFG
+# from ogmp_isaac.assets import BERKELEY_HUMANOID_CFG, BERKELEY_HUMANOID_MPCL
+# from ogmp_isaac.assets import HECTOR_V1P5_IPD_CFG, HECTOR_V1P5_MPCL
+# from ogmp_isaac.assets import HECTOR_V1_DC_CFG, HECTOR_V1_MPCL
+# from ogmp_isaac.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_DC_ART_CFG as HECTOR_V1P5_DC_CFG, HECTOR_V1P5_DC_MPCL
+from ogmp_isaac.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_DC_MPCL
+from ogmp_isaac.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_IPD_ART_CFG as HECTOR_V1P5_IPD_CFG
 
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import Articulation
 from omni.isaac.lab.sim import SimulationContext
 
-# from ogmplm.assets import H1_DC_CFG, H1_MPCL
-# from ogmplm.assets.robots.G1.g1_cfg import G1_DC_SPLIT_ART_CFG as G1_DC_CFG, G1_MPCL
+# from ogmp_isaac.assets import H1_DC_CFG, H1_MPCL
+# from ogmp_isaac.assets.robots.G1.g1_cfg import G1_DC_SPLIT_ART_CFG as G1_DC_CFG, G1_MPCL
 
 
 def main():
@@ -278,9 +278,9 @@ def main():
     motor_commands = motor_commands.cpu().numpy()
 
     print(joint_velocities.shape, joint_positions.shape, motor_commands.shape)
-    np.save("/home/lkrajan/drcl_projects/ogmp_v2/ogmplm/scripts/joint_positions.npy", joint_positions)
-    np.save("/home/lkrajan/drcl_projects/ogmp_v2/ogmplm/scripts/joint_velocities.npy", joint_velocities)
-    np.save("/home/lkrajan/drcl_projects/ogmp_v2/ogmplm/scripts/motor_commands.npy", motor_commands)
+    np.save("/home/lkrajan/drcl_projects/ogmp_v2/ogmp_isaac/scripts/joint_positions.npy", joint_positions)
+    np.save("/home/lkrajan/drcl_projects/ogmp_v2/ogmp_isaac/scripts/joint_velocities.npy", joint_velocities)
+    np.save("/home/lkrajan/drcl_projects/ogmp_v2/ogmp_isaac/scripts/motor_commands.npy", motor_commands)
 
     # make a plot 2x5
 

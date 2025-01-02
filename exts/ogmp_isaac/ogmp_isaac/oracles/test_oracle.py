@@ -1,6 +1,6 @@
 import torch
 
-from ogmplm.oracles.reach_oracle import ReachOracle
+from ogmp_isaac.oracles.reach_oracle import ReachOracle
 
 if __name__ == "__main__":
     oracle = ReachOracle(

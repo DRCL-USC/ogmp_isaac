@@ -1,6 +1,6 @@
 import gymnasium as gym
 
-import ogmplm.agents as agents
+import ogmp_isaac.agents as agents
 
 from .flat_box_env import FlatBoxEnv, FlatBoxEnvCfg
 
@@ -10,7 +10,7 @@ from .flat_box_env import FlatBoxEnv, FlatBoxEnvCfg
 
 gym.register(
     id="Box-v0",
-    entry_point="ogmplm.tasks.box:FlatBoxEnv",
+    entry_point="ogmp_isaac.tasks.box:FlatBoxEnv",
     disable_env_checker=True,
     kwargs={
         "env_cfg_entry_point": FlatBoxEnvCfg,

@@ -1,6 +1,6 @@
 # Install the package
 
-`cd exts/ogmplm && pip install -e . && cd -`
+`python -m pip install -e exts/ogmp_isaac`
 
 # Training
 
