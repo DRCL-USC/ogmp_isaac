@@ -26,6 +26,10 @@ simulation_app = app_launcher.app
 
 """Rest everything follows."""
 
+import omni.isaac.lab.sim as sim_utils
+from omni.isaac.lab.assets import Articulation
+from omni.isaac.lab.sim import SimulationContext
+
 ##
 # Pre-defined configs
 ##
@@ -36,10 +40,6 @@ simulation_app = app_launcher.app
 # from ogmp_isaac.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_DC_ART_CFG as HECTOR_V1P5_DC_CFG, HECTOR_V1P5_DC_MPCL
 from ogmp_isaac.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_DC_MPCL
 from ogmp_isaac.assets.robots.hector.v1p5.w_coupling import HECTOR_V1P5_IPD_ART_CFG as HECTOR_V1P5_IPD_CFG
-
-import omni.isaac.lab.sim as sim_utils
-from omni.isaac.lab.assets import Articulation
-from omni.isaac.lab.sim import SimulationContext
 
 # from ogmp_isaac.assets import H1_DC_CFG, H1_MPCL
 # from ogmp_isaac.assets.robots.G1.g1_cfg import G1_DC_SPLIT_ART_CFG as G1_DC_CFG, G1_MPCL

@@ -8,7 +8,6 @@ from omni.isaac.lab.assets.articulation import ArticulationCfg
 ##
 
 
-
 ASSETS_DIR = os.path.dirname(os.path.realpath(__file__))
 
 GOALPOSTS_CFG = ArticulationCfg(

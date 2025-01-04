@@ -3,11 +3,11 @@
 #
 # SPDX-License-Identifier: BSD-3-Clause
 
-from ogmp_isaac.assets.actuators import IdentifiedActuatorCfg
-from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
-
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets.articulation import ArticulationCfg
+
+from ogmp_isaac.assets.actuators import IdentifiedActuatorCfg
+from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
 
 # from berkeley_humanoid.assets import ISAAC_ASSET_DIR
 

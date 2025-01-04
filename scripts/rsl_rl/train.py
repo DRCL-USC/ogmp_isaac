@@ -35,7 +35,7 @@ AppLauncher.add_app_launcher_args(parser)
 args_cli, hydra_args = parser.parse_known_args()
 
 if args_cli.yaml_config:
-    yaml_config = yaml.safe_load(open(args_cli.yaml_config, 'r'))
+    yaml_config = yaml.safe_load(open(args_cli.yaml_config))
     if "env_name" in yaml_config:
         args_cli.task = yaml_config["env_name"]
         del yaml_config["env_name"]
@@ -86,6 +86,7 @@ from typing import Any
 
 # Removed error for the iterable from the original function
 from omni.isaac.lab.utils.string import string_to_callable
+
 
 def custom_update_class_from_dict(obj, data: dict[str, Any], _ns: str = "") -> None:
     """Reads a dictionary and sets object variables recursively.
@@ -138,6 +139,7 @@ def custom_update_class_from_dict(obj, data: dict[str, Any], _ns: str = "") -> N
         else:
             raise KeyError(f"[Config]: Key not found under namespace: {key_ns}.")
 
+
 @hydra_task_config(args_cli.task, "rsl_rl_cfg_entry_point")
 def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agent_cfg: RslRlOnPolicyRunnerCfg):
     """Train with RSL-RL agent."""
@@ -147,22 +149,22 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
         yaml_env_cfg = yaml_config.get("environment_cfg", {})
         yaml_agent_cfg = yaml_config.get("agent_cfg", {})
         run_name = yaml_config.get("run_name", None)
-        experiment_name = run_name.split('/')[0]
-        run_name = run_name.split('/')[1]
+        experiment_name = run_name.split("/")[0]
+        run_name = run_name.split("/")[1]
         if run_name:
             del yaml_config["run_name"]
         custom_update_class_from_dict(env_cfg, yaml_env_cfg)
 
     if args_cli.visualize:
         env_cfg.visualize_markers = True
-    
+
     agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
     if run_name:
         agent_cfg.run_name = run_name
     if args_cli.yaml_config:
         custom_update_class_from_dict(agent_cfg, yaml_agent_cfg)
-    agent_cfg.experiment_name = '-'.join(args_cli.task.split('-')[:-1]).lower()+'/'+experiment_name
-    
+    agent_cfg.experiment_name = "-".join(args_cli.task.split("-")[:-1]).lower() + "/" + experiment_name
+
     # override configurations with non-hydra CLI arguments
     env_cfg.scene.num_envs = args_cli.num_envs if args_cli.num_envs is not None else env_cfg.scene.num_envs
     agent_cfg.max_iterations = (

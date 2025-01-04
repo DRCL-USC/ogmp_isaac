@@ -1,11 +1,11 @@
-from ogmp_isaac.assets.actuators import IdentifiedActuatorCfg
-from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
-
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets.articulation import ArticulationCfg
 from omni.isaac.lab.utils.assets import ISAACLAB_NUCLEUS_DIR
 from omni.isaac.lab_assets import G1_CFG as G1_ART_CFG
 from omni.isaac.lab_assets import G1_MINIMAL_CFG as G1_MINIMAL_ART_CFG
+
+from ogmp_isaac.assets.actuators import IdentifiedActuatorCfg
+from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
 
 G1_DC_ART_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(

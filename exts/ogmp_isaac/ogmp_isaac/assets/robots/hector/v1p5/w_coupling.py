@@ -1,5 +1,9 @@
 import os
 
+import omni.isaac.lab.sim as sim_utils
+from omni.isaac.lab.assets.articulation import ArticulationCfg
+from omni.isaac.lab.utils import configclass
+
 from ogmp_isaac.assets.actuators import (
     HectorV1p5DCActuatorCfg,
     HectorV1p5IdealPDActuatorCfg,
@@ -7,14 +11,9 @@ from ogmp_isaac.assets.actuators import (
 )
 from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
 
-import omni.isaac.lab.sim as sim_utils
-from omni.isaac.lab.assets.articulation import ArticulationCfg
-from omni.isaac.lab.utils import configclass
-
 ##
 # Configuration
 ##
-
 
 
 ASSETS_DIR = os.path.dirname(os.path.realpath(__file__))

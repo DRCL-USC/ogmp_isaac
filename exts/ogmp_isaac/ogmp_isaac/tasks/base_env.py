@@ -4,12 +4,6 @@ import torch
 
 import omni.isaac.core.utils.torch as torch_utils
 
-import ogmp_isaac.oracles as oracles
-import ogmp_isaac.utils.observations as observations
-import ogmp_isaac.utils.rewards as rewards
-import ogmp_isaac.utils.terminations as terminations
-from ogmp_isaac.assets import *
-
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import Articulation, ArticulationCfg
 from omni.isaac.lab.envs import DirectRLEnv, DirectRLEnvCfg
@@ -20,6 +14,12 @@ from omni.isaac.lab.sensors import ContactSensor, ContactSensorCfg
 from omni.isaac.lab.sim import SimulationCfg
 from omni.isaac.lab.terrains import TerrainImporterCfg
 from omni.isaac.lab.utils import configclass
+
+import ogmp_isaac.oracles as oracles
+import ogmp_isaac.utils.observations as observations
+import ogmp_isaac.utils.rewards as rewards
+import ogmp_isaac.utils.terminations as terminations
+from ogmp_isaac.assets import *
 
 torch.set_printoptions(profile="short", sci_mode=False)
 

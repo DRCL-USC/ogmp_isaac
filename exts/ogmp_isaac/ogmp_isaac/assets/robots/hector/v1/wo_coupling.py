@@ -1,11 +1,11 @@
 import os
 
-from ogmp_isaac.assets.actuators import IdentifiedActuatorCfg
-from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
-
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.actuators import ImplicitActuatorCfg
 from omni.isaac.lab.assets.articulation import ArticulationCfg
+
+from ogmp_isaac.assets.actuators import IdentifiedActuatorCfg
+from ogmp_isaac.assets.robots.robot_cfg import RobotCfg
 
 ##
 # Configuration

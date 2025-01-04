@@ -25,6 +25,11 @@ simulation_app = app_launcher.app
 
 """Rest everything follows."""
 
+import omni.isaac.lab.sim as sim_utils
+from omni.isaac.lab.assets import Articulation
+from omni.isaac.lab.sim import SimulationContext
+from omni.isaac.lab.terrains import TerrainGeneratorCfg, TerrainImporterCfg
+
 ##
 # Pre-defined configs
 ##
@@ -33,11 +38,6 @@ simulation_app = app_launcher.app
 # from ogmp_isaac.assets import HECTOR_V1P5_IPD_CFG, HECTOR_V1P5_MPCL
 # from ogmp_isaac.assets import HECTOR_V1_DC_CFG, HECTOR_V1_MPCL
 from ogmp_isaac.assets import HECTOR_V1P5_DC_CFG, HECTOR_V1P5_DC_MPCL
-
-import omni.isaac.lab.sim as sim_utils
-from omni.isaac.lab.assets import Articulation
-from omni.isaac.lab.sim import SimulationContext
-from omni.isaac.lab.terrains import TerrainGeneratorCfg, TerrainImporterCfg
 
 
 def main():

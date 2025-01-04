@@ -40,6 +40,8 @@ import gymnasium as gym
 import os
 import torch
 import yaml
+from collections.abc import Iterable, Mapping
+from typing import Any
 
 from rsl_rl.runners import OnPolicyRunner
 
@@ -56,8 +58,6 @@ from omni.isaac.lab_tasks.utils.wrappers.rsl_rl import (
 # Import extensions to set up environment tasks
 import ogmp_isaac.tasks  # noqa: F401
 
-from collections.abc import Iterable, Mapping
-from typing import Any
 
 def custom_update_class_from_dict(obj, data: dict[str, Any], _ns: str = "") -> None:
     """Reads a dictionary and sets object variables recursively.
@@ -110,16 +110,17 @@ def custom_update_class_from_dict(obj, data: dict[str, Any], _ns: str = "") -> N
         else:
             raise KeyError(f"[Config]: Key not found under namespace: {key_ns}.")
 
+
 def main():
     """Play with RSL-RL agent."""
     # parse configuration
     if args_cli.yaml_config:
-        yaml_config = yaml.safe_load(open(args_cli.yaml_config, 'r'))
+        yaml_config = yaml.safe_load(open(args_cli.yaml_config))
         yaml_env_cfg = yaml_config.get("environment_cfg", {})
         yaml_agent_cfg = yaml_config.get("agent_cfg", {})
         run_name = yaml_config.get("run_name", None)
-        experiment_name = run_name.split('/')[0]
-        run_name = run_name.split('/')[1]
+        experiment_name = run_name.split("/")[0]
+        run_name = run_name.split("/")[1]
         if run_name:
             del yaml_config["run_name"]
         if "env_name" in yaml_config:
@@ -129,7 +130,7 @@ def main():
     env_cfg = parse_env_cfg(
         args_cli.task, device=args_cli.device, num_envs=args_cli.num_envs, use_fabric=not args_cli.disable_fabric
     )
-    
+
     if args_cli.yaml_config:
         custom_update_class_from_dict(env_cfg, yaml_env_cfg)
     if args_cli.visualize:
@@ -140,7 +141,7 @@ def main():
         agent_cfg.load_run = run_name
     if args_cli.yaml_config:
         custom_update_class_from_dict(agent_cfg, yaml_agent_cfg)
-    agent_cfg.experiment_name = '-'.join(args_cli.task.split('-')[:-1]).lower()+'/'+experiment_name
+    agent_cfg.experiment_name = "-".join(args_cli.task.split("-")[:-1]).lower() + "/" + experiment_name
 
     # specify directory for logging experiments
     log_root_path = os.path.join("logs", agent_cfg.experiment_name)

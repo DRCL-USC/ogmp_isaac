@@ -226,9 +226,7 @@ def rew_joint_acc_norm(env):
 
 
 def rew_torque_rate_norm(env):
-    torque_rate = torch.linalg.vector_norm(env.robot.data.applied_torque - env.previous_torques, dim=-1) / (
-        2 * env.max_joint_torque
-    )
+    torque_rate = torch.linalg.vector_norm(env.robot.data.applied_torque - env.previous_torques, dim=-1) / env.max_joint_torque
     return env.cfg.rewards["torque_rate_norm"]["weight"] * torch.exp(
         -env.cfg.rewards["torque_rate_norm"]["exp_scale"] * torque_rate
     )
