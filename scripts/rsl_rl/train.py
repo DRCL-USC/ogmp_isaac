@@ -144,19 +144,23 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
     # parse configuration
     run_name = None
     if args_cli.yaml_config:
+        yaml_env_cfg = yaml_config.get("environment_cfg", {})
+        yaml_agent_cfg = yaml_config.get("agent_cfg", {})
         run_name = yaml_config.get("run_name", None)
         experiment_name = run_name.split('/')[0]
         run_name = run_name.split('/')[1]
         if run_name:
             del yaml_config["run_name"]
+        custom_update_class_from_dict(env_cfg, yaml_env_cfg)
 
-    agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
-    if args_cli.yaml_config:
-        custom_update_class_from_dict(env_cfg, yaml_config)
     if args_cli.visualize:
         env_cfg.visualize_markers = True
+    
+    agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
     if run_name:
         agent_cfg.run_name = run_name
+    if args_cli.yaml_config:
+        custom_update_class_from_dict(agent_cfg, yaml_agent_cfg)
     agent_cfg.experiment_name = '-'.join(args_cli.task.split('-')[:-1]).lower()+'/'+experiment_name
     
     # override configurations with non-hydra CLI arguments

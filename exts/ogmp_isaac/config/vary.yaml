@@ -1,0 +1,4 @@
+agent_cfg/policy/rnn_hidden_size:
+- 64
+- 128
+- 512

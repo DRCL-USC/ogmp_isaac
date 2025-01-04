@@ -115,6 +115,8 @@ def main():
     # parse configuration
     if args_cli.yaml_config:
         yaml_config = yaml.safe_load(open(args_cli.yaml_config, 'r'))
+        yaml_env_cfg = yaml_config.get("environment_cfg", {})
+        yaml_agent_cfg = yaml_config.get("agent_cfg", {})
         run_name = yaml_config.get("run_name", None)
         experiment_name = run_name.split('/')[0]
         run_name = run_name.split('/')[1]
@@ -129,13 +131,15 @@ def main():
     )
     
     if args_cli.yaml_config:
-        custom_update_class_from_dict(env_cfg, yaml_config)
+        custom_update_class_from_dict(env_cfg, yaml_env_cfg)
     if args_cli.visualize:
         env_cfg.visualize_markers = True
 
     agent_cfg: RslRlOnPolicyRunnerCfg = cli_args.parse_rsl_rl_cfg(args_cli.task, args_cli)
     if run_name and agent_cfg.load_run == ".*":
         agent_cfg.load_run = run_name
+    if args_cli.yaml_config:
+        custom_update_class_from_dict(agent_cfg, yaml_agent_cfg)
     agent_cfg.experiment_name = '-'.join(args_cli.task.split('-')[:-1]).lower()+'/'+experiment_name
 
     # specify directory for logging experiments
