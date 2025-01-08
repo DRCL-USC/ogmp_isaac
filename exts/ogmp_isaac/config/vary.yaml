@@ -1,4 +1,3 @@
-agent_cfg/policy/rnn_hidden_size:
-- 64
-- 128
-- 512
+environment_cfg/robot_model:
+- HECTOR_V1P5
+- BERKELEY_HUMANOID

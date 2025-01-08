@@ -1,5 +1,5 @@
-run_name: yaml_test
-env_name: Box-v0
+run_name: release_exps
+env_name: Soccer-v0
 
 ### Environment configuration ###
 environment_cfg:
@@ -7,16 +7,12 @@ environment_cfg:
   robot_model: HECTOR_V1P5_DC
   env_dt: 0.033333
   episode_length_s: 15.0
-  box_start: 1.0
-  target: 3.0
   omni_direction_lim:
   - 0.0
-  - 360.0
-  observations:
-  - base_z
-  - base_ori
-  - joint_pos
-  - base_lin_vel
+  - 0.0
+  ball_start: 1.0
+  target: 3.0
+  drag_coeff: 0.5
   rewards:
     base_pos:
       weight: 0.3
@@ -41,56 +37,50 @@ environment_cfg:
       exp_scale: 10.0
     default_joint_pos:
       weight: -0.1
-    box_closeness:
+    ball_closeness:
       weight: 0.5
-      threshold: 0.5
     preference:
       weight: -5.0
-    box_pos:
+    ball_pos:
       weight: 1.0
       exp_scale: 2.0
-    box_vel:
+    ball_vel:
       weight: 1.0
       exp_scale: 2.0
-    penalize_box_rest:
+    penalize_ball_rest:
       weight: -0.5
       threshold: 0.05
   terminations:
-  - ogmp_pos_x
-  - ogmp_pos_y
-  - ogmp_pos_z
-  - box_pos_x
-  - box_pos_y
-  ogmp_error_terminations:
-    base_pos_x: 0.4
-    base_pos_y: 0.4
-    base_pos_z: 0.1
-    box_pos_x: 0.4
-    box_pos_y: 0.4
+    base_pos_x:
+      threshold: 0.4
+    base_pos_y:
+      threshold: 0.4
+    base_pos_z:
+      threshold: 0.2
+    ball_pos_x:
+      threshold: 0.4
   oracle:
-    name: PushBoxOracle
+    name: KickSoccerOracle
     params:
-      speed: 0.8
+      speed: 1.0
       reach_thresh: 0.4
       detach_thresh: 0.4
-      nominal_height: 0.515
+      nominal_height: 0.5
 
 ### Agent configuration ###
 agent_cfg:
-  max_iterations: 2000
+  max_iterations: 10000
   policy:
     class_name: ActorCriticRecurrent
     init_noise_std: 1.0
     actor_hidden_dims:
-    - 400
     - 200
     - 100
     critic_hidden_dims:
-    - 400
     - 200
     - 100
     activation: elu
     rnn_type: lstm
-    rnn_hidden_size: 256
+    rnn_hidden_size: 128
     rnn_num_layers: 1
   save_interval: 100
