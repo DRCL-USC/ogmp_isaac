@@ -36,7 +36,7 @@ def rew_ball_closeness(env):
         * (env.oracle.modes == 1).float()
         * (
             torch.linalg.vector_norm(env.ball.data.root_pos_w - env.robot.data.root_pos_w, dim=-1)
-            <= env.cfg.rewards["ball_closeness"]["threshold"]
+            <= env.nominal_height
         ).float()
     )
     return error_ball_pos
@@ -61,7 +61,7 @@ def rew_box_closeness(env):
         * (env.oracle.modes == 1).float()
         * (
             torch.linalg.vector_norm(env.box.data.root_pos_w - env.robot.data.root_pos_w, dim=-1)
-            <= env.cfg.rewards["box_closeness"]["threshold"]
+            <= env.nominal_height
         ).float()
     )
     return error_box_pos

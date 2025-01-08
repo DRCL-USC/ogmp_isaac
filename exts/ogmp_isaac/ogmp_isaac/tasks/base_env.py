@@ -99,6 +99,7 @@ class BaseEnv(DirectRLEnv):
         self.max_modes = torch.zeros(self.num_envs, dtype=torch.int64, device=self.sim.device)
         self.env_indices = torch.arange(self.num_envs, device=self.sim.device)
         self.previous_torques = torch.zeros((self.num_envs, self.cfg.num_actions), device=self.sim.device)
+        self.nominal_height = torch.tensor(self.cfg.oracle["params"]["nominal_height"], device=self.sim.device)
 
     def compose_reward_funcs(self):
         for key in self.cfg.rewards.keys():
