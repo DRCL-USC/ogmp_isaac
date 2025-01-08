@@ -31,8 +31,9 @@ def rew_base_lin_vel(env):
 
 
 def rew_base_ang_vel(env):
-    # target_ang_vel = torch.gather(env.oracle.reference.base_ang_vel, 1, env.oracle.phase.unsqueeze(-1).expand(-1, -1, 3)).squeeze(1)
-    target_ang_vel = torch.zeros((env.num_envs, 3), device=env.sim.device)
+    target_ang_vel = torch.gather(
+        env.oracle.reference.base_ang_vel, 1, env.oracle.phase.unsqueeze(-1).expand(-1, -1, 3)
+    ).squeeze(1)
     error_ang_vel = torch.linalg.vector_norm(env.robot.data.root_ang_vel_w - target_ang_vel, dim=-1)
     error_ang_vel = env.cfg.rewards["base_ang_vel"]["weight"] * torch.exp(
         -env.cfg.rewards["base_ang_vel"]["exp_scale"] * error_ang_vel

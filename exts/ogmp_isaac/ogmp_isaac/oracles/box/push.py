@@ -10,6 +10,7 @@ class PushReference(BaseReference):
     base_pos: torch.Tensor = field(init=False)
     base_ori: torch.Tensor = field(init=False)
     base_lin_vel: torch.Tensor = field(init=False)
+    base_ang_vel: torch.Tensor = field(init=False)
     box_pos: torch.Tensor = field(init=False)
     box_vel: torch.Tensor = field(init=False)
 
@@ -18,6 +19,7 @@ class PushReference(BaseReference):
         self.base_pos = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
         self.base_ori = torch.zeros((self.num_envs, self.prediction_horizon, 4), device=self.device)
         self.base_lin_vel = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
+        self.base_ang_vel = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
         self.box_pos = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
         self.box_vel = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
 
@@ -40,6 +42,7 @@ class PushBoxOracle(BaseOracle):
         self.reference.base_pos[env_ids] = 0
         self.reference.base_ori[env_ids] = 0
         self.reference.base_lin_vel[env_ids] = 0
+        self.reference.base_ang_vel[env_ids] = 0
         self.reference.box_pos[env_ids] = 0
         self.reference.box_vel[env_ids] = 0
 

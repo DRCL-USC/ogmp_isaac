@@ -10,6 +10,7 @@ class StopReference(BaseReference):
     base_pos: torch.Tensor = field(init=False)
     base_ori: torch.Tensor = field(init=False)
     base_lin_vel: torch.Tensor = field(init=False)
+    base_ang_vel: torch.Tensor = field(init=False)
     ball_pos: torch.Tensor = field(init=False)
     ball_vel: torch.Tensor = field(init=False)
 
@@ -18,6 +19,7 @@ class StopReference(BaseReference):
         self.base_pos = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
         self.base_ori = torch.zeros((self.num_envs, self.prediction_horizon, 4), device=self.device)
         self.base_lin_vel = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
+        self.base_ang_vel = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
         self.ball_pos = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
         self.ball_vel = torch.zeros((self.num_envs, self.prediction_horizon, 3), device=self.device)
 
@@ -39,6 +41,7 @@ class StopSoccerOracle(BaseOracle):
         self.reference.base_pos[env_ids] = 0
         self.reference.base_ori[env_ids] = 0
         self.reference.base_lin_vel[env_ids] = 0
+        self.reference.base_ang_vel[env_ids] = 0
         self.reference.ball_pos[env_ids] = 0
         self.reference.ball_vel[env_ids] = 0
 
