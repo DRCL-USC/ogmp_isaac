@@ -34,9 +34,7 @@ class FlatBoxEnvCfg(BaseEnvCfg):
         "base_ori": {"weight": 0.23, "exp_coeff": 5.0},
         "base_lin_vel": {"weight": 0.3, "exp_coeff": 2.0},
         "box_closeness": {"weight": 0.5, "threshold": 0.5},
-        "preference": {
-            "weight": -1.0,
-        },
+        "preference": {"weight": -1.0,},
         "torque_exp": {"weight": 0.15, "exp_coeff": 0.05},
         "action": {"weight": 0.15, "exp_coeff": 1.0},
     }
@@ -51,19 +49,12 @@ class FlatBoxEnvCfg(BaseEnvCfg):
         "target_dist",
         "sinusoid_phase",
     ]
-    terminations = [
-        "ogmp_pos_x",
-        "ogmp_pos_y",
-        "ogmp_pos_z",
-        "box_pos_x",
-        "box_pos_y",
-    ]
-    ogmp_error_terminations = {
-        "base_pos_x": 0.4,
-        "base_pos_y": 0.4,
-        "base_pos_z": 0.1,
-        "box_pos_x": 0.2,
-        "box_pos_y": 0.2,
+    terminations = {
+        "base_pos_x": {"threshold": 0.4},
+        "base_pos_y": {"threshold": 0.4},
+        "base_pos_z": {"threshold": 0.1},
+        "box_pos_x": {"threshold": 0.2},
+        "box_pos_y": {"threshold": 0.2},
     }
     oracle = {
         "name": "PushBoxOracle",

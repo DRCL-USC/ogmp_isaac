@@ -79,10 +79,6 @@ def obs_joint_torque_hector_coupling(env):
     return joint_torque
 
 
-def obs_cmd_vel(env):
-    return env.cmd_vel
-
-
 def obs_sinusoid_phase(env):
     return torch.cat(
         [

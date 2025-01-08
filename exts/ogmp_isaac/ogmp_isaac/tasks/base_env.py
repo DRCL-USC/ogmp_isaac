@@ -59,7 +59,7 @@ class BaseEnvCfg(DirectRLEnvCfg):
     episode_length_s = 15.0
     env_dt = 1.0 / 30
     rewards = {}
-    terminations = []
+    terminations = {}
     observations = []
 
     # oracle
@@ -69,7 +69,6 @@ class BaseEnvCfg(DirectRLEnvCfg):
             "speed": 0.5,
         },
     }
-    ogmp_error_terminations = {}
 
     visualize_markers = False
 
@@ -102,11 +101,11 @@ class BaseEnv(DirectRLEnv):
         self.nominal_height = torch.tensor(self.cfg.oracle["params"]["nominal_height"], device=self.sim.device)
 
     def compose_reward_funcs(self):
-        for key in self.cfg.rewards.keys():
-            self.reward_funcs.append(getattr(rewards, "rew_" + key))
+        for rew in self.cfg.rewards.keys():
+            self.reward_funcs.append(getattr(rewards, "rew_" + rew))
 
     def compose_termination_funcs(self):
-        for term in self.cfg.terminations:
+        for term in self.cfg.terminations.keys():
             self.termination_funcs.append(getattr(terminations, "term_" + term))
 
     def compose_observation_funcs(self):

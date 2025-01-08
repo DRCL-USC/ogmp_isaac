@@ -56,9 +56,7 @@ class SoccerEnvCfg(BaseEnvCfg):
         "base_ori": {"weight": 0.23, "exp_coeff": 5.0},
         "base_lin_vel": {"weight": 0.3, "exp_coeff": 2.0},
         "ball_closeness": {"weight": 0.5, "threshold": 0.5},
-        "preference": {
-            "weight": -1.0,
-        },
+        "preference": {"weight": -1.0,},
         "ball_pos": {"weight": 1.0, "exp_scale": 2.0},
         "ball_vel": {"weight": 1.0, "exp_scale": 2.0},
         "torque_exp": {"weight": 0.15, "exp_coeff": 0.05},
@@ -76,19 +74,11 @@ class SoccerEnvCfg(BaseEnvCfg):
         "target_dist",
         "sinusoid_phase",
     ]
-    terminations = [
-        "ogmp_pos_x",
-        "ogmp_pos_y",
-        "ogmp_pos_z",
-        "ball_pos_x",
-        "ball_pos_y",
-    ]
-    ogmp_error_terminations = {
-        "base_pos_x": 0.4,
-        "base_pos_y": 0.4,
-        "base_pos_z": 0.2,
-        "ball_pos_x": 0.4,
-        "ball_pos_y": 0.4,
+    terminations = {
+        "base_pos_x": {"threshold": 0.4},
+        "base_pos_y": {"threshold": 0.4},
+        "base_pos_z": {"threshold": 0.2},
+        "ball_pos_x": {"threshold": 0.4},
     }
     oracle = {
         "name": "KickSoccerOracle",
@@ -118,7 +108,6 @@ class SoccerEnv(BaseEnv):
         self.heading_angles = torch.zeros((self.num_envs,), device=self.sim.device)
         self.start_angle = torch.deg2rad(torch.tensor(self.cfg.omni_direction_lim[0], device=self.sim.device))
         self.end_angle = torch.deg2rad(torch.tensor(self.cfg.omni_direction_lim[1], device=self.sim.device))
-        # self.is_goal = torch.zeros((self.num_envs, ), dtype=torch.int64, device=self.sim.device).bool()
 
         if self.cfg.visualize_markers:
             self.marker = VisualizationMarkers(self.cfg.marker_cfg)
@@ -131,26 +120,10 @@ class SoccerEnv(BaseEnv):
             self.scene.articulations["goalposts"] = self.goalposts
 
         super()._setup_scene()
-        # self.cfg.feet_ball_contact = [
-        #                             ContactSensorCfg(
-        #                                                 prim_path="/World/envs/env_.*/Robot/"+body_name,
-        #                                                 history_length=3,
-        #                                                 debug_vis=False,
-        #                                                 track_air_time=True,
-        #                                                 filter_prim_paths_expr = [f"/World/envs/env_{i}/ball" for i in range(self.num_envs)]
-        #                                             )
-        #                                 for body_name in eval(self.cfg.robot_model+"_FEET_BODIES")
-        #                                 ]
-        # self.feet_ball_contact_sensors = []
-        # for i,fcs_cfg in enumerate(self.cfg.feet_ball_contact):
-        #     self.feet_ball_contact_sensors.append(ContactSensor(fcs_cfg))
-        #     self.scene.sensors[f"feet_ball_contact_sensor_{i}"] = self.feet_ball_contact_sensors[-1]
-
+    
     def _apply_action(self):
         super()._apply_action()
         self.apply_drag_force()
-        # goal_mask = torch.norm(self.ball.data.root_pos_w[:, :2] - self.scene.env_origins[:, :2], dim=-1) > self.cfg.goal_pos
-        # self.is_goal |= goal_mask
 
     def apply_drag_force(self):
         # F = -c * v^2
@@ -163,12 +136,6 @@ class SoccerEnv(BaseEnv):
         drag_force_b = quat_rotate_inverse(self.ball.data.root_quat_w, drag_force_w).unsqueeze(1)
         self.ball.set_external_force_and_torque(drag_force_b, torch.zeros_like(drag_force_b))
         self.ball.write_data_to_sim()
-
-    def _get_rewards(self) -> torch.Tensor:
-        # Current yaw is okay, no penalty
-        # yaw = euler_xyz_from_quat(self.robot.data.root_quat_w)[2]
-        # self.oracle.reference.base_ori[self.env_indices, self.oracle.phase.squeeze()] = quat_from_euler_xyz(torch.zeros_like(yaw), torch.zeros_like(yaw), yaw)
-        return super()._get_rewards()
 
     def _reset_idx(self, env_ids: torch.Tensor | None):
         if env_ids is None or env_ids.numel() == self.num_envs:
