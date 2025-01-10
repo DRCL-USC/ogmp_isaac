@@ -234,7 +234,6 @@ HECTOR_V1P5_IPD_ART_CFG = ArticulationCfg(
     },
 )
 
-
 # DC actuator
 HECTOR_V1P5_DC_ART_CFG = ArticulationCfg(
     spawn=sim_utils.UsdFileCfg(
@@ -316,28 +315,30 @@ HECTOR_V1P5_DC_ART_CFG = ArticulationCfg(
                 "r_ankle_joint": 21.0,
             },
             stiffness={
-                "l_hip_yaw_joint": 15.0,
-                "r_hip_yaw_joint": 15.0,
-                "l_hip_roll_joint": 15.0,
-                "r_hip_roll_joint": 15.0,
-                "l_hip_pitch_joint": 20.0,
-                "r_hip_pitch_joint": 20.0,
-                "l_knee_joint": 20.0,  # kp*knee_gear_ratio^2
-                "r_knee_joint": 20.0,  # kp*knee_gear_ratio^2
-                "l_ankle_joint": 10.0,
-                "r_ankle_joint": 10.0,
+                        'l_hip_yaw_joint': 20.0,
+                        'r_hip_yaw_joint': 20.0,
+                        'l_hip_roll_joint': 20.0,
+                        'r_hip_roll_joint': 20.0,
+                        'l_hip_pitch_joint': 20.0,
+                        'r_hip_pitch_joint': 20.0,
+                        'l_knee_joint': 30.0, # kp*knee_gear_ratio^2
+                        'r_knee_joint': 30.0, # kp*knee_gear_ratio^2
+                        'l_ankle_joint': 10.0,
+                        'r_ankle_joint': 10.0
+
+
             },
             damping={
-                "l_hip_yaw_joint": 1.0,
-                "r_hip_yaw_joint": 1.0,
-                "l_hip_roll_joint": 1.0,
-                "r_hip_roll_joint": 1.0,
-                "l_hip_pitch_joint": 0.5,
-                "r_hip_pitch_joint": 0.5,
-                "l_knee_joint": 0.1,  # kd*knee_gear_ratio^2
-                "r_knee_joint": 0.1,  # kd*knee_gear_ratio^2
-                "l_ankle_joint": 0.05,
-                "r_ankle_joint": 0.05,
+                        'l_hip_yaw_joint': 1.0,
+                        'r_hip_yaw_joint': 1.0,
+                        'l_hip_roll_joint': 1.0,
+                        'r_hip_roll_joint': 1.0,
+                        'l_hip_pitch_joint': 0.5,
+                        'r_hip_pitch_joint': 0.5,
+                        'l_knee_joint': 0.5, # kd*knee_gear_ratio^2
+                        'r_knee_joint': 0.5, # kd*knee_gear_ratio^2
+                        'l_ankle_joint': 0.05,
+                        'r_ankle_joint': 0.05,
             },
             friction_static={
                 ".*": 0.2,
