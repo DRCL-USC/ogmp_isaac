@@ -20,6 +20,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--base_path", default="./exp_confs/pw_2_stilts.yaml", type=str)
     parser.add_argument("--vary_path", default="./exp_confs/trng_parms_to_vary.yaml", type=str)
+    parser.add_argument("--generate_mode", default="list", type=str, help="list or product")
     parser.add_argument("--remove_base_conf", action="store_true")
     args = parser.parse_args()
 
@@ -31,15 +32,9 @@ if __name__ == "__main__":
     dtn = datetime.now().strftime("%Y%b%d_%H-%M-%S")
     experiment_name = dtn + "_" + base_exp_conf["run_name"]
 
+
     vary_trng_params_file = open(args.vary_path)
     params_to_vary = yaml.load(vary_trng_params_file, Loader=yaml.FullLoader)
-
-    variant_list = list(product_dict(**params_to_vary))
-
-    print("n. variants:", len(variant_list))
-
-    exp_id = 0
-
     logdir_exp = cwd + "/logs/" + task_name + "/" + experiment_name + "/"
     os.makedirs(logdir_exp, exist_ok=True)
     # dump the base_expe_config and vary_trng_params
@@ -50,6 +45,20 @@ if __name__ == "__main__":
     vary_trng_params_file = open(dumpfile_at, "w")
     yaml.dump(params_to_vary, vary_trng_params_file, default_flow_style=False, sort_keys=False)
 
+    if args.generate_mode == "product":
+        variant_list = list(product_dict(**params_to_vary))
+    elif args.generate_mode == "list":
+        variant_list = []
+        for vn, vd in params_to_vary.items(): 
+            variant_list.append(vd)        
+    else:
+        raise ValueError("generate_mode should be either 'list' or 'product' received: ", args.generate_mode)
+
+    for vi,var in enumerate(variant_list):
+        print("\t", vi, var)
+    print("n. variants:", len(variant_list))
+
+    exp_id = 0
     with open(logdir_exp + "/param_vary_list.csv", "w") as pvl:
         csv_writer = csv.writer(pvl)
 
