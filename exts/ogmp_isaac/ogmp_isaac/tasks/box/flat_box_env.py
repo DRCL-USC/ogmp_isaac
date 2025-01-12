@@ -1,5 +1,6 @@
 import os
 import torch
+import math
 
 import omni.isaac.lab.sim as sim_utils
 from omni.isaac.lab.assets import RigidObject, RigidObjectCfg
@@ -60,18 +61,18 @@ class FlatBoxEnvCfg(BaseEnvCfg):
         "name": "PushBoxOracle",
         "params": {
             "speed": 0.8,
-            "reach_thresh": 0.3,
-            "detach_thresh": 0.3,
+            "reach_thresh": 0.4,
+            "detach_thresh": 0.4,
         },
     }
-    box_start = 1.0
+    omni_direction_lim = [0.0, 360.0]
     box_height = 0.5
     height_to_file_name = {
         "0.5": "box_0p5m.usd",
         "1.0": "box_1m.usd",
         "1.5": "box_1p5m.usd",
     }
-    omni_direction_lim = [0.0, 360.0]
+    box_start = 1.0
     target = 3.0
 
 
@@ -88,6 +89,10 @@ class FlatBoxEnv(BaseEnv):
         if self.cfg.visualize_markers:
             self.marker = VisualizationMarkers(self.cfg.marker_cfg)
         self.oracle.box_com = self.box.data.default_root_state[0, 2]
+        self.cfg.box_start += self.cfg.box_height - 0.5
+        self.cfg.target += self.cfg.box_height - 0.5
+        # reach thresh is the half-diagonal of the box + 0.05
+        self.oracle.reach_thresh = torch.tensor(0.05 + math.sqrt(2) * self.cfg.box_height / 2, device=self.sim.device)
 
     def _setup_scene(self):
         box_cfg = RigidObjectCfg(

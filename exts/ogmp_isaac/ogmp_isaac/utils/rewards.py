@@ -59,7 +59,7 @@ def rew_box_closeness(env):
         * (env.oracle.modes == 1).float()
         * (
             torch.linalg.vector_norm(env.box.data.root_pos_w - env.robot.data.root_pos_w, dim=-1)
-            <= env.nominal_height
+            <= env.cfg.box_height
         ).float()
     )
     return error_box_pos

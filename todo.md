@@ -1,6 +1,7 @@
 ## Todo before release 
 
 - [x] Add list mode for generate.py
+- [x] move thresh, start target into the box env computed based on box dim 
 - [ ] Add the last policy of recreated experiments for play.py
 - [ ] Setup the base.yml and vary.yaml for each task in `exts/ogmp_isaac/config` for recreating trainings. 
 - [ ] Remove unused robot models
