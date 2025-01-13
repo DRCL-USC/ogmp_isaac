@@ -25,7 +25,7 @@ class PushReference(BaseReference):
 
 
 class PushBoxOracle(BaseOracle):
-    def __init__(self, reach_thresh=0.3, detach_thresh=0.3, box_com=0.25, **kwargs):
+    def __init__(self, reach_thresh=0.4, detach_thresh=0.4, box_com=0.25, **kwargs):
         super().__init__(**kwargs)
         self.reference = PushReference(
             num_envs=self.num_envs,
