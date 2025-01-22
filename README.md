@@ -6,14 +6,14 @@
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/20.04/)
 
 <div>
-      <img src="./media/bh_soccer_crop.gif" alt="Berkeley Humanoid playing soccer" width="225"/>
-      <img src="./media/g1_soccer_crop_online.gif" alt="G1 playing soccer" width="225"/>
-      <img src="./media/h1_soccer_crop.gif" alt="H1 playing soccer" width="225"/>
+      <img src="./media/bh_soccer_crop.gif" alt="Berkeley Humanoid playing soccer" width="250" style="margin-right: 10px; margin-bottom: 10px;"/>
+      <img src="./media/g1_soccer_crop_online.gif" alt="G1 playing soccer" width="250" style="margin-right: 10px; margin-bottom: 10px;"/>
+      <img src="./media/h1_soccer_crop.gif" alt="H1 playing soccer" width="250" style="margin-right: 10px; margin-bottom: 10px;"/>
 </div>
 <div>
-      <img src="./media/bh_box_crop.gif" alt="Berkeley Humanoid pushing box" width="225"/>
-      <img src="./media/g1_box_crop_online.gif" alt="G1 pushing box" width="225"/>
-      <img src="./media/h1_box_crop_online.gif" alt="H1 pushing box" width="225"/>
+      <img src="./media/bh_box_crop.gif" alt="Berkeley Humanoid pushing box" width="250" style="margin-right: 10px; margin-bottom: 10px;"/>
+      <img src="./media/g1_box_crop_online.gif" alt="G1 pushing box" width="250" style="margin-right: 10px; margin-bottom: 10px;"/>
+      <img src="./media/h1_box_crop_online.gif" alt="H1 pushing box" width="250" style="margin-right: 10px; margin-bottom: 10px;"/>
 </div>
 
 This repository contains the code for the experiments in the paper - [Dynamic Bipedal Loco-manipulation using Oracle Guided Multi-mode Policies with Mode-transition Preference](https://arxiv.org/abs/2410.01030). Check out the project [website](https://indweller.github.io/ogmplm/) for more details.
