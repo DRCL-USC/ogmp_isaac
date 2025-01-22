@@ -55,17 +55,13 @@ This permutes the base configuration with the variants and generates a custom tr
 
 ```
 <experiment_name>
-
-      - <variant_0>
-
-            - exp_conf.yaml
-
-      - <variant_1>
-
-            - exp_conf.yaml
-            .
-            .
-            .
+      <variant_0>
+            exp_conf.yaml
+      <variant_1>
+            exp_conf.yaml
+      .
+      .
+      .
 ```
 
 The training can now be deployed in one of two ways,
