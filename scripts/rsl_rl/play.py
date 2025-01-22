@@ -21,6 +21,7 @@ parser.add_argument("--task", type=str, default=None, help="Name of the task.")
 parser.add_argument("--seed", type=int, default=None, help="Seed used for the environment")
 parser.add_argument("--yaml_config", type=str, default=None, help="Path to the yaml configuration file.")
 parser.add_argument("--visualize", action="store_true", default=False, help="Visualize the environment.")
+parser.add_argument("--visualize_goalpost", action="store_true", default=False, help="Visualize the goalpost.")
 # append RSL-RL cli arguments
 cli_args.add_rsl_rl_args(parser)
 # append AppLauncher cli args
@@ -135,6 +136,8 @@ def main():
         custom_update_class_from_dict(env_cfg, yaml_env_cfg)
     if args_cli.visualize:
         env_cfg.visualize_markers = True
+    if args_cli.visualize_goalpost:
+        env_cfg.visualize_goalpost = True
 
     agent_cfg: RslRlOnPolicyRunnerCfg = cli_args.parse_rsl_rl_cfg(args_cli.task, args_cli)
     if run_name and agent_cfg.load_run == ".*":

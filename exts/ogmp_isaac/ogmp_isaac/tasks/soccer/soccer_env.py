@@ -108,6 +108,7 @@ class SoccerEnv(BaseEnv):
         self.heading_angles = torch.zeros((self.num_envs,), device=self.sim.device)
         self.start_angle = torch.deg2rad(torch.tensor(self.cfg.omni_direction_lim[0], device=self.sim.device))
         self.end_angle = torch.deg2rad(torch.tensor(self.cfg.omni_direction_lim[1], device=self.sim.device))
+        self.cfg.goal_pos = self.cfg.target + 2.0
 
         if self.cfg.visualize_markers:
             self.marker = VisualizationMarkers(self.cfg.marker_cfg)
