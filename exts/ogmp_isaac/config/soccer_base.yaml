@@ -1,4 +1,4 @@
-run_name: base_soccer
+run_name: release_experiments
 env_name: Soccer-v0
 
 ### Environment configuration ###

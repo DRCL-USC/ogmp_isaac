@@ -18,8 +18,8 @@ cwd = os.getcwd()
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base_path", default="./exp_confs/pw_2_stilts.yaml", type=str)
-    parser.add_argument("--vary_path", default="./exp_confs/trng_parms_to_vary.yaml", type=str)
+    parser.add_argument("--base_path",  type=str, required=True)
+    parser.add_argument("--vary_path", type=str, required=True)
     parser.add_argument("--generate_mode", default="list", type=str, help="list or product")
     parser.add_argument("--remove_base_conf", action="store_true")
     args = parser.parse_args()
