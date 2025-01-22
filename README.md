@@ -8,17 +8,17 @@
 <div style="text-align: center;">
   <table>
     <tr>
-      <td><img src="./media/bh_soccer_crop.gif" alt="Berkeley Humanoid playing soccer" width="300"/></td>
-      <td><img src="./media/g1_soccer_crop_online.gif" alt="G1 playing soccer" width="300"/></td>
-      <td><img src="./media/h1_soccer_crop.gif" alt="H1 playing soccer" width="300"/></td>
+      <td><img src="./media/bh_soccer_crop.gif" alt="Berkeley Humanoid playing soccer" width="150"/></td>
+      <td><img src="./media/g1_soccer_crop_online.gif" alt="G1 playing soccer" width="150"/></td>
+      <td><img src="./media/h1_soccer_crop.gif" alt="H1 playing soccer" width="150"/></td>
       <!-- <td><video autoplay muted loop playsinline controls src="./media/bh_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td>
       <td><video autoplay muted loop playsinline controls src="./media/g1_soccer_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
       <td><video autoplay muted loop playsinline controls src="./media/h1_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td> -->
     </tr>
     <tr>
-      <td><img src="./media/bh_box_crop.gif" alt="Berkeley Humanoid pushing box" width="300"/></td>
-      <td><img src="./media/g1_box_crop_online.gif" alt="G1 pushing box" width="300"/></td>
-      <td><img src="./media/h1_box_crop_online.gif" alt="H1 pushing box" width="300"/></td>
+      <td><img src="./media/bh_box_crop.gif" alt="Berkeley Humanoid pushing box" width="150"/></td>
+      <td><img src="./media/g1_box_crop_online.gif" alt="G1 pushing box" width="150"/></td>
+      <td><img src="./media/h1_box_crop_online.gif" alt="H1 pushing box" width="150"/></td>
       <!-- <td><video autoplay muted loop playsinline controls src="./media/bh_box_crop.mp4" style="border-radius:10px;width:30"></video></td>
       <td><video autoplay muted loop playsinline controls src="./media/g1_box_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
       <td><video autoplay muted loop playsinline controls src="./media/h1_box_crop_online.mp4" style="border-radius:10px;width:30"></video></td> -->
