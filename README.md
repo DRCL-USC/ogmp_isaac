@@ -8,6 +8,7 @@
 <div style="text-align: center;">
   <table>
     <tr>
+      <td><img src="./media/h1_box_crop_online.gif" alt="Robot playing soccer 1" width="300"/></td>
       <td><video autoplay muted loop playsinline controls src="./media/bh_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td>
       <td><video autoplay muted loop playsinline controls src="./media/g1_soccer_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
       <td><video autoplay muted loop playsinline controls src="./media/h1_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td>
