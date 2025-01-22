@@ -127,6 +127,9 @@ def main():
         if "env_name" in yaml_config:
             args_cli.task = yaml_config["env_name"]
             del yaml_config["env_name"]
+        # remove all terminations other than base z
+        current_threshold = yaml_env_cfg["terminations"]["base_pos_z"]
+        yaml_env_cfg["terminations"] = {"base_pos_z": current_threshold}
 
     env_cfg = parse_env_cfg(
         args_cli.task, device=args_cli.device, num_envs=args_cli.num_envs, use_fabric=not args_cli.disable_fabric

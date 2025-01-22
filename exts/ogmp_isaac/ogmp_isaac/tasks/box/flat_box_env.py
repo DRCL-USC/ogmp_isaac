@@ -51,11 +51,11 @@ class FlatBoxEnvCfg(BaseEnvCfg):
         "sinusoid_phase",
     ]
     terminations = {
-        "base_pos_x": {"threshold": 0.4},
-        "base_pos_y": {"threshold": 0.4},
-        "base_pos_z": {"threshold": 0.1},
-        "box_pos_x": {"threshold": 0.2},
-        "box_pos_y": {"threshold": 0.2},
+        "base_pos_x": 0.4,
+        "base_pos_y": 0.4,
+        "base_pos_z": 0.1,
+        "box_pos_x": 0.2,
+        "box_pos_y": 0.2,
     }
     oracle = {
         "name": "PushBoxOracle",

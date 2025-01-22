@@ -75,10 +75,10 @@ class SoccerEnvCfg(BaseEnvCfg):
         "sinusoid_phase",
     ]
     terminations = {
-        "base_pos_x": {"threshold": 0.4},
-        "base_pos_y": {"threshold": 0.4},
-        "base_pos_z": {"threshold": 0.2},
-        "ball_pos_x": {"threshold": 0.4},
+        "base_pos_x": 0.4,
+        "base_pos_y": 0.4,
+        "base_pos_z": 0.2,
+        "ball_pos_x": 0.4,
     }
     oracle = {
         "name": "KickSoccerOracle",
