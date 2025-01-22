@@ -32,7 +32,7 @@ Authors: Prashanth Ravichandar, Lokesh Krishna, Nikhil Sobanbabu and Quan Nguyen
 
 ## Testing
 
-To play with our best pre-trained models or a custom-trained model run 
+To play with our best pre-trained policices or a new custom-trained policy, run 
 
 ```
 python scripts/rsl_rl/play.py --yaml_config ./logs/soccer/release_experiments/H1_DC/exp_conf.yaml --num_envs 1 --visualize --visualize_goalpost
