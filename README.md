@@ -5,6 +5,21 @@
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/20.04/)
 
+<div style="text-align: center;">
+  <table>
+    <tr>
+      <td><video autoplay muted loop playsinline controls src="./media/bh_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td>
+      <td><video autoplay muted loop playsinline controls src="./media/g1_soccer_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
+      <td><video autoplay muted loop playsinline controls src="./media/h1_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td>
+    </tr>
+    <tr>
+      <td><video autoplay muted loop playsinline controls src="./media/bh_box_crop.mp4" style="border-radius:10px;width:30"></video></td>
+      <td><video autoplay muted loop playsinline controls src="./media/g1_box_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
+      <td><video autoplay muted loop playsinline controls src="./media/h1_box_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
+    </tr>
+  </table>
+</div>
+
 This repository contains the code for the experiments in the paper - [Dynamic Bipedal Loco-manipulation using Oracle Guided Multi-mode Policies with Mode-transition Preference](https://arxiv.org/abs/2410.01030). Check out the project [website](https://indweller.github.io/ogmplm/) for more details.
 
 Authors: Prashanth Ravichandar, Lokesh Krishna, Nikhil Sobanbabu and Quan Nguyen
