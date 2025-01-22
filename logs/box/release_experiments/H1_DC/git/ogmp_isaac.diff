@@ -1,0 +1,193 @@
+--- git status ---
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   exts/ogmp_isaac/config/base.yaml
+	modified:   exts/ogmp_isaac/config/vary.yaml
+	modified:   scripts/rsl_rl/play.py
+	modified:   scripts/rsl_rl/train.py
+	modified:   todo.md
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/exts/ogmp_isaac/config/base.yaml b/exts/ogmp_isaac/config/base.yaml
+index c2649f8..6f668ac 100644
+--- a/exts/ogmp_isaac/config/base.yaml
++++ b/exts/ogmp_isaac/config/base.yaml
+@@ -1,18 +1,16 @@
+-run_name: release_exps
+-env_name: Soccer-v0
++run_name: updated_box
++env_name: Box-v0
+ 
+ ### Environment configuration ###
+ environment_cfg:
+   seed: 42
+-  robot_model: HECTOR_V1P5_DC
++  robot_model: H1_DC
+   env_dt: 0.033333
+-  episode_length_s: 15.0
++  episode_length_s: 10.0
+   omni_direction_lim:
+   - 0.0
+-  - 0.0
+-  ball_start: 1.0
+-  target: 3.0
+-  drag_coeff: 0.5
++  - 360.0
++  box_height: 1.5
+   rewards:
+     base_pos:
+       weight: 0.3
+@@ -31,23 +29,23 @@ environment_cfg:
+       exp_scale: 10.0
+     torque_rate_norm:
+       weight: 0.1
+-      exp_scale: 25.0
++      exp_scale: 10.0
+     joint_vel_norm:
+       weight: 0.1
+       exp_scale: 10.0
+     default_joint_pos:
+       weight: -0.1
+-    ball_closeness:
++    box_closeness:
+       weight: 0.5
+     preference:
+       weight: -5.0
+-    ball_pos:
++    box_pos:
+       weight: 1.0
+       exp_scale: 2.0
+-    ball_vel:
++    box_vel:
+       weight: 1.0
+       exp_scale: 2.0
+-    penalize_ball_rest:
++    penalize_box_rest:
+       weight: -0.5
+       threshold: 0.05
+   terminations:
+@@ -56,16 +54,17 @@ environment_cfg:
+     base_pos_y:
+       threshold: 0.4
+     base_pos_z:
+-      threshold: 0.2
+-    ball_pos_x:
++      threshold: 0.1
++    box_pos_x:
++      threshold: 0.4
++    box_pos_y:
+       threshold: 0.4
+   oracle:
+-    name: KickSoccerOracle
++    name: PushBoxOracle
+     params:
+-      speed: 1.0
+-      reach_thresh: 0.4
++      speed: 0.8
+       detach_thresh: 0.4
+-      nominal_height: 0.5
++      nominal_height: 1.05
+ 
+ ### Agent configuration ###
+ agent_cfg:
+diff --git a/exts/ogmp_isaac/config/vary.yaml b/exts/ogmp_isaac/config/vary.yaml
+index 92b5662..0b0767f 100644
+--- a/exts/ogmp_isaac/config/vary.yaml
++++ b/exts/ogmp_isaac/config/vary.yaml
+@@ -9,7 +9,10 @@
+ 
+ #  list mode (set as default)
+ v0:
+-  environment_cfg/robot_model: HECTOR_V1P5
++  environment_cfg/robot_model: H1_DC
++  environment_cfg/box_height: 1.5
++  environment_cfg/oracle/params/nominal_height: 1.05
+ v1:
+-  environment_cfg/robot_model: BERKELEY_HUMANOID
+-  environment_cfg/oracle/params/nominal_height: 0.515
++  environment_cfg/robot_model: G1_DC
++  environment_cfg/box_height: 1.0
++  environment_cfg/oracle/params/nominal_height: 0.74
+\ No newline at end of file
+diff --git a/scripts/rsl_rl/play.py b/scripts/rsl_rl/play.py
+index 64a8992..fdbf364 100644
+--- a/scripts/rsl_rl/play.py
++++ b/scripts/rsl_rl/play.py
+@@ -45,7 +45,7 @@ from typing import Any
+ 
+ from rsl_rl.runners import OnPolicyRunner
+ 
+-from omni.isaac.lab.envs import DirectMARLEnv, multi_agent_to_single_agent
++# from omni.isaac.lab.envs import DirectMARLEnv, multi_agent_to_single_agent
+ from omni.isaac.lab.utils.dict import print_dict
+ from omni.isaac.lab_tasks.utils import get_checkpoint_path, parse_env_cfg
+ from omni.isaac.lab_tasks.utils.wrappers.rsl_rl import (
+@@ -165,8 +165,8 @@ def main():
+         env = gym.wrappers.RecordVideo(env, **video_kwargs)
+ 
+     # convert to single-agent instance if required by the RL algorithm
+-    if isinstance(env.unwrapped, DirectMARLEnv):
+-        env = multi_agent_to_single_agent(env)
++    # if isinstance(env.unwrapped, DirectMARLEnv):
++    #     env = multi_agent_to_single_agent(env)
+ 
+     # wrap around environment for rsl-rl
+     env = RslRlVecEnvWrapper(env)
+diff --git a/scripts/rsl_rl/train.py b/scripts/rsl_rl/train.py
+index fb1bd12..1af69ba 100644
+--- a/scripts/rsl_rl/train.py
++++ b/scripts/rsl_rl/train.py
+@@ -61,11 +61,11 @@ from datetime import datetime
+ from rsl_rl.runners import OnPolicyRunner
+ 
+ from omni.isaac.lab.envs import (
+-    DirectMARLEnv,
+-    DirectMARLEnvCfg,
++    # DirectMARLEnv,
++    # DirectMARLEnvCfg,
+     DirectRLEnvCfg,
+     ManagerBasedRLEnvCfg,
+-    multi_agent_to_single_agent,
++    # multi_agent_to_single_agent,
+ )
+ from omni.isaac.lab.utils.dict import print_dict
+ from omni.isaac.lab.utils.io import dump_pickle, dump_yaml
+@@ -141,7 +141,7 @@ def custom_update_class_from_dict(obj, data: dict[str, Any], _ns: str = "") -> N
+ 
+ 
+ @hydra_task_config(args_cli.task, "rsl_rl_cfg_entry_point")
+-def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agent_cfg: RslRlOnPolicyRunnerCfg):
++def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg, agent_cfg: RslRlOnPolicyRunnerCfg):
+     """Train with RSL-RL agent."""
+     # parse configuration
+     run_name = None
+@@ -199,8 +199,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
+         env = gym.wrappers.RecordVideo(env, **video_kwargs)
+ 
+     # convert to single-agent instance if required by the RL algorithm
+-    if isinstance(env.unwrapped, DirectMARLEnv):
+-        env = multi_agent_to_single_agent(env)
++    # if isinstance(env.unwrapped, DirectMARLEnv):
++    #     env = multi_agent_to_single_agent(env)
+ 
+     # wrap around environment for rsl-rl
+     env = RslRlVecEnvWrapper(env)
+diff --git a/todo.md b/todo.md
+index b70b7c0..a8ad43b 100644
+--- a/todo.md
++++ b/todo.md
+@@ -16,4 +16,4 @@
+ | Task\Robot | HECTOR_V1P5 |  BERKELEY_HUMANOID | G1 | H1 | 
+ | ---------- | ----------- |  -----------        | ----------- | ----------- |
+ | Soccer w/ kick| | :white_check_mark: |:white_check_mark: |:white_check_mark: |    
+-| Box push|:white_check_mark: | :white_check_mark: |||   
+\ No newline at end of file
++| Box push| |  |||   
+\ No newline at end of file

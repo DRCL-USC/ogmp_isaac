@@ -1,0 +1,243 @@
+--- git status ---
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+	modified:   exts/ogmp_isaac/config/base.yaml
+	modified:   exts/ogmp_isaac/config/vary.yaml
+	modified:   exts/ogmp_isaac/ogmp_isaac/assets/robots/hector/v1p5/w_coupling.py
+	modified:   exts/ogmp_isaac/ogmp_isaac/tasks/base_env.py
+	modified:   exts/ogmp_isaac/ogmp_isaac/tasks/box/flat_box_env.py
+	modified:   scripts/rsl_rl/play.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	exts/ogmp_isaac/ogmp_isaac/assets/objects/box_0p25m.usd
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/README.md b/README.md
+index 89f5dd4..4e1854c 100644
+--- a/README.md
++++ b/README.md
+@@ -11,3 +11,19 @@
+ `python scripts/rsl_rl/play.py --yaml_config \<path to trained config (not exp_config)\> --num_envs <number of envs>`
+ 
+ Defaults to 4096 envs
++
++# Citation
++
++If you use this code in your research, please cite the following paper:
++```
++@misc{ravichandar2024dynamicbipedallocomanipulationusing,
++      title={Dynamic Bipedal Loco-manipulation using Oracle Guided Multi-mode Policies with Mode-transition Preference}, 
++      author={Prashanth Ravichandar and Lokesh Krishna and Nikhil Sobanbabu and Quan Nguyen},
++      year={2024},
++      eprint={2410.01030},
++      archivePrefix={arXiv},
++      primaryClass={cs.RO},
++      url={https://arxiv.org/abs/2410.01030}, 
++}
++```
++For the theory on oracle guided policy optimization, refer to the paper [OGMP: Oracle Guided Multi-mode Policies for Agile and Versatile Robot Control](https://arxiv.org/abs/2403.04205).
+\ No newline at end of file
+diff --git a/exts/ogmp_isaac/config/base.yaml b/exts/ogmp_isaac/config/base.yaml
+index c2649f8..4a43e21 100644
+--- a/exts/ogmp_isaac/config/base.yaml
++++ b/exts/ogmp_isaac/config/base.yaml
+@@ -31,7 +31,7 @@ environment_cfg:
+       exp_scale: 10.0
+     torque_rate_norm:
+       weight: 0.1
+-      exp_scale: 25.0
++      exp_scale: 10.0
+     joint_vel_norm:
+       weight: 0.1
+       exp_scale: 10.0
+@@ -62,7 +62,7 @@ environment_cfg:
+   oracle:
+     name: KickSoccerOracle
+     params:
+-      speed: 1.0
++      speed: 0.8
+       reach_thresh: 0.4
+       detach_thresh: 0.4
+       nominal_height: 0.5
+diff --git a/exts/ogmp_isaac/config/vary.yaml b/exts/ogmp_isaac/config/vary.yaml
+index 92b5662..83f1fbd 100644
+--- a/exts/ogmp_isaac/config/vary.yaml
++++ b/exts/ogmp_isaac/config/vary.yaml
+@@ -9,7 +9,6 @@
+ 
+ #  list mode (set as default)
+ v0:
+-  environment_cfg/robot_model: HECTOR_V1P5
++  environment_cfg/robot_model: HECTOR_V1P5_DC
+ v1:
+-  environment_cfg/robot_model: BERKELEY_HUMANOID
+-  environment_cfg/oracle/params/nominal_height: 0.515
++  environment_cfg/robot_model: BERKELEY_HUMANOID
+\ No newline at end of file
+diff --git a/exts/ogmp_isaac/ogmp_isaac/assets/robots/hector/v1p5/w_coupling.py b/exts/ogmp_isaac/ogmp_isaac/assets/robots/hector/v1p5/w_coupling.py
+index cd0091f..187b555 100644
+--- a/exts/ogmp_isaac/ogmp_isaac/assets/robots/hector/v1p5/w_coupling.py
++++ b/exts/ogmp_isaac/ogmp_isaac/assets/robots/hector/v1p5/w_coupling.py
+@@ -321,8 +321,8 @@ HECTOR_V1P5_DC_ART_CFG = ArticulationCfg(
+                         'r_hip_roll_joint': 20.0,
+                         'l_hip_pitch_joint': 20.0,
+                         'r_hip_pitch_joint': 20.0,
+-                        'l_knee_joint': 30.0, # kp*knee_gear_ratio^2
+-                        'r_knee_joint': 30.0, # kp*knee_gear_ratio^2
++                        'l_knee_joint': 40.0, # kp*knee_gear_ratio^2
++                        'r_knee_joint': 40.0, # kp*knee_gear_ratio^2
+                         'l_ankle_joint': 10.0,
+                         'r_ankle_joint': 10.0
+ 
+diff --git a/exts/ogmp_isaac/ogmp_isaac/tasks/base_env.py b/exts/ogmp_isaac/ogmp_isaac/tasks/base_env.py
+index ece2b4f..9911b7d 100644
+--- a/exts/ogmp_isaac/ogmp_isaac/tasks/base_env.py
++++ b/exts/ogmp_isaac/ogmp_isaac/tasks/base_env.py
+@@ -99,6 +99,8 @@ class BaseEnv(DirectRLEnv):
+         self.env_indices = torch.arange(self.num_envs, device=self.sim.device)
+         self.previous_torques = torch.zeros((self.num_envs, self.cfg.num_actions), device=self.sim.device)
+         self.nominal_height = torch.tensor(self.cfg.oracle["params"]["nominal_height"], device=self.sim.device)
++        # self.traj = []
++        # self.env_id_traj = set()
+ 
+     def compose_reward_funcs(self):
+         for rew in self.cfg.rewards.keys():
+@@ -206,9 +208,42 @@ class BaseEnv(DirectRLEnv):
+ 
+     def _get_dones(self) -> tuple[torch.Tensor, torch.Tensor]:
+         time_out = terminations.term_time_out(self)
++        # if time_out.any():
++        #     env_ids = torch.where(time_out)[0]
++        #     for env_id in env_ids:
++        #         if env_id.item() not in self.env_id_traj:
++        #             # dist = torch.linalg.norm(self.robot.data.root_pos_w[env_id, :2] - self.scene.env_origins[env_id, :2])
++        #             box_dist = torch.linalg.norm(self.box.data.root_pos_w[env_id, :2] - self.scene.env_origins[env_id, :2])
++        #             # self.traj.append((terminations.term_time_out.__name__, self.episode_length_buf[env_id].item(), torch.rad2deg(self.heading_angles[env_id]).item()))
++        #             # self.traj.append((terminations.term_time_out.__name__, dist.item(), torch.rad2deg(self.heading_angles[env_id]).item()))
++        #             self.traj.append((terminations.term_time_out.__name__, box_dist.item(), torch.rad2deg(self.heading_angles[env_id]).item()))
++        #             self.env_id_traj.add(env_id.item())
+         died = torch.zeros((self.num_envs,), device=self.sim.device).bool()
+         for func in self.termination_funcs:
+             died |= func(self)
++            # if func(self).any():
++            #     env_ids = torch.where(func(self))[0]
++            #     for env_id in env_ids:
++            #         if env_id.item() not in self.env_id_traj:
++            #             # dist = torch.linalg.norm(self.robot.data.root_pos_w[env_id, :2] - self.scene.env_origins[env_id, :2])
++            #             box_dist = torch.linalg.norm(self.box.data.root_pos_w[env_id, :2] - self.scene.env_origins[env_id, :2])
++            #             # self.traj.append((func.__name__, self.episode_length_buf[env_id].item(), torch.rad2deg(self.heading_angles[env_id]).item()))
++            #             # self.traj.append((func.__name__, dist.item(), torch.rad2deg(self.heading_angles[env_id]).item()))
++            #             self.traj.append((func.__name__, box_dist.item(), torch.rad2deg(self.heading_angles[env_id]).item()))
++            #             self.env_id_traj.add(env_id.item())
++            #     if len(self.traj) == 100:
++            #         sorted_traj = sorted(self.traj, key=lambda x: x[1])
++            #         print(sorted_traj)
++            #         print(len(self.env_id_traj), len(sorted_traj))
++            #         for i in range(100):
++            #             is_close = False
++            #             for j in range(100):
++            #                 if abs(sorted_traj[i][2] - torch.rad2deg(self.all_heading_angles[j]).item()) < 1e-4:
++            #                     is_close = True
++            #                     break
++            #             if not is_close:
++            #                 print(sorted_traj[i], torch.rad2deg(self.all_heading_angles[sorted_traj[i][0]]))
++            #         exit(0)
+ 
+         return died, time_out
+ 
+diff --git a/exts/ogmp_isaac/ogmp_isaac/tasks/box/flat_box_env.py b/exts/ogmp_isaac/ogmp_isaac/tasks/box/flat_box_env.py
+index 5968e5a..10899e2 100644
+--- a/exts/ogmp_isaac/ogmp_isaac/tasks/box/flat_box_env.py
++++ b/exts/ogmp_isaac/ogmp_isaac/tasks/box/flat_box_env.py
+@@ -74,6 +74,7 @@ class FlatBoxEnvCfg(BaseEnvCfg):
+     }
+     box_start = 1.0
+     target = 3.0
++    box_weight = 5.0
+ 
+ 
+ class FlatBoxEnv(BaseEnv):
+@@ -93,20 +94,35 @@ class FlatBoxEnv(BaseEnv):
+         self.cfg.target += self.cfg.box_height - 0.5
+         # reach thresh is the half-diagonal of the box + 0.05
+         self.oracle.reach_thresh = torch.tensor(0.05 + math.sqrt(2) * self.cfg.box_height / 2, device=self.sim.device)
++        # self.initial = True
+ 
+     def _setup_scene(self):
+-        box_cfg = RigidObjectCfg(
+-            prim_path="/World/envs/env_.*/box",
+-            spawn=sim_utils.UsdFileCfg(
+-                usd_path=os.path.join(ASSETS_DIR, self.cfg.height_to_file_name[str(self.cfg.box_height)]),
+-                activate_contact_sensors=True,
+-            ),
+-            init_state=RigidObjectCfg.InitialStateCfg(
+-                pos=(2.0, 0.0, self.cfg.box_height / 2),
+-                lin_vel=(0.0, 0.0, 0.0),
+-                ang_vel=(0.0, 0.0, 0.0),
+-            ),
+-        )
++        if self.cfg.box_weight == 5.0:
++            box_cfg = RigidObjectCfg(
++                prim_path="/World/envs/env_.*/box",
++                spawn=sim_utils.UsdFileCfg(
++                    usd_path=os.path.join(ASSETS_DIR, self.cfg.height_to_file_name[str(self.cfg.box_height)]),
++                    activate_contact_sensors=True,
++                ),
++                init_state=RigidObjectCfg.InitialStateCfg(
++                    pos=(2.0, 0.0, self.cfg.box_height / 2),
++                    lin_vel=(0.0, 0.0, 0.0),
++                    ang_vel=(0.0, 0.0, 0.0),
++                ),
++            )
++        elif self.cfg.box_weight == 2.5:
++            box_cfg = RigidObjectCfg(
++                prim_path="/World/envs/env_.*/box",
++                spawn=sim_utils.UsdFileCfg(
++                    usd_path=os.path.join(ASSETS_DIR, "box_0p25m.usd"),
++                    activate_contact_sensors=True,
++                ),
++                init_state=RigidObjectCfg.InitialStateCfg(
++                    pos=(2.0, 0.0, self.cfg.box_height / 2),
++                    lin_vel=(0.0, 0.0, 0.0),
++                    ang_vel=(0.0, 0.0, 0.0),
++                ),
++            )
+         self.box = RigidObject(box_cfg)
+         self.scene.rigid_objects["box"] = self.box
+         super()._setup_scene()
+@@ -140,6 +156,12 @@ class FlatBoxEnv(BaseEnv):
+             torch.rand((env_ids.numel(),), device=self.sim.device) * (self.end_angle - self.start_angle)
+             + self.start_angle
+         )
++        # self.heading_angles[env_ids] = torch.linspace(
++        #     self.start_angle, self.end_angle, env_ids.numel(), device=self.sim.device
++        # )
++        # if self.initial:
++        #     self.all_heading_angles = self.heading_angles.clone()
++        #     self.initial = False
+         cos_heading = torch.cos(self.heading_angles[env_ids])
+         sin_heading = torch.sin(self.heading_angles[env_ids])
+ 
+diff --git a/scripts/rsl_rl/play.py b/scripts/rsl_rl/play.py
+index 64a8992..17ac117 100644
+--- a/scripts/rsl_rl/play.py
++++ b/scripts/rsl_rl/play.py
+@@ -126,6 +126,9 @@ def main():
+         if "env_name" in yaml_config:
+             args_cli.task = yaml_config["env_name"]
+             del yaml_config["env_name"]
++        # remove all terminations other than base z
++        current_threshold = yaml_env_cfg["environment_cfg"]["terminations"]["base_pos_z"]["threshold"]
++        yaml_env_cfg["environment_cfg"]["terminations"] = {"base_pos_z": {"threshold": current_threshold}}
+ 
+     env_cfg = parse_env_cfg(
+         args_cli.task, device=args_cli.device, num_envs=args_cli.num_envs, use_fabric=not args_cli.disable_fabric

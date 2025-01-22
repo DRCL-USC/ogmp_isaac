@@ -1,0 +1,76 @@
+run_name: release_experiments/BERKELEY_HUMANOID
+env_name: Box-v0
+environment_cfg:
+  seed: 42
+  robot_model: BERKELEY_HUMANOID
+  env_dt: 0.033333
+  episode_length_s: 10.0
+  omni_direction_lim:
+  - 0.0
+  - 360.0
+  box_height: 0.5
+  rewards:
+    base_pos:
+      weight: 0.3
+      exp_scale: 5.0
+    base_ori:
+      weight: 0.3
+      exp_scale: 5.0
+    base_lin_vel:
+      weight: 0.15
+      exp_scale: 2.0
+    base_ang_vel:
+      weight: 0.15
+      exp_scale: 2.0
+    torque_exp_norm:
+      weight: 0.1
+      exp_scale: 10.0
+    torque_rate_norm:
+      weight: 0.1
+      exp_scale: 10.0
+    joint_vel_norm:
+      weight: 0.1
+      exp_scale: 10.0
+    default_joint_pos:
+      weight: -0.1
+    box_closeness:
+      weight: 0.5
+    preference:
+      weight: -5.0
+    box_pos:
+      weight: 1.0
+      exp_scale: 2.0
+    box_vel:
+      weight: 1.0
+      exp_scale: 2.0
+    penalize_box_rest:
+      weight: -0.5
+      threshold: 0.05
+  terminations:
+    base_pos_x: 0.4
+    base_pos_y: 0.4
+    base_pos_z: 0.1
+    box_pos_x: 0.4
+    box_pos_y: 0.4
+  oracle:
+    name: PushBoxOracle
+    params:
+      speed: 0.8
+      detach_thresh: 0.4
+      nominal_height: 0.515
+agent_cfg:
+  max_iterations: 10000
+  policy:
+    class_name: ActorCriticRecurrent
+    init_noise_std: 1.0
+    actor_hidden_dims:
+    - 200
+    - 100
+    critic_hidden_dims:
+    - 200
+    - 100
+    activation: elu
+    rnn_type: lstm
+    rnn_hidden_size: 128
+    rnn_num_layers: 1
+  save_interval: 100

@@ -1,0 +1,108 @@
+--- git status ---
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   exts/ogmp_isaac/config/base.yaml
+	modified:   exts/ogmp_isaac/config/vary.yaml
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/exts/ogmp_isaac/config/base.yaml b/exts/ogmp_isaac/config/base.yaml
+index c2649f8..aaa94f6 100644
+--- a/exts/ogmp_isaac/config/base.yaml
++++ b/exts/ogmp_isaac/config/base.yaml
+@@ -1,18 +1,16 @@
+-run_name: release_exps
+-env_name: Soccer-v0
++run_name: updated_def_pos_z
++env_name: Box-v0
+ 
+ ### Environment configuration ###
+ environment_cfg:
+   seed: 42
+-  robot_model: HECTOR_V1P5_DC
++  robot_model: BERKELEY_HUMANOID
+   env_dt: 0.033333
+-  episode_length_s: 15.0
++  episode_length_s: 10.0
+   omni_direction_lim:
+   - 0.0
+-  - 0.0
+-  ball_start: 1.0
+-  target: 3.0
+-  drag_coeff: 0.5
++  - 360.0
++  box_height: 0.5
+   rewards:
+     base_pos:
+       weight: 0.3
+@@ -31,23 +29,23 @@ environment_cfg:
+       exp_scale: 10.0
+     torque_rate_norm:
+       weight: 0.1
+-      exp_scale: 25.0
++      exp_scale: 10.0
+     joint_vel_norm:
+       weight: 0.1
+       exp_scale: 10.0
+     default_joint_pos:
+       weight: -0.1
+-    ball_closeness:
++    box_closeness:
+       weight: 0.5
+     preference:
+       weight: -5.0
+-    ball_pos:
++    box_pos:
+       weight: 1.0
+       exp_scale: 2.0
+-    ball_vel:
++    box_vel:
+       weight: 1.0
+       exp_scale: 2.0
+-    penalize_ball_rest:
++    penalize_box_rest:
+       weight: -0.5
+       threshold: 0.05
+   terminations:
+@@ -56,16 +54,17 @@ environment_cfg:
+     base_pos_y:
+       threshold: 0.4
+     base_pos_z:
+-      threshold: 0.2
+-    ball_pos_x:
++      threshold: 0.1
++    box_pos_x:
++      threshold: 0.4
++    box_pos_y:
+       threshold: 0.4
+   oracle:
+-    name: KickSoccerOracle
++    name: PushBoxOracle
+     params:
+-      speed: 1.0
+-      reach_thresh: 0.4
++      speed: 0.8
+       detach_thresh: 0.4
+-      nominal_height: 0.5
++      nominal_height: 0.515
+ 
+ ### Agent configuration ###
+ agent_cfg:
+diff --git a/exts/ogmp_isaac/config/vary.yaml b/exts/ogmp_isaac/config/vary.yaml
+index 92b5662..599133b 100644
+--- a/exts/ogmp_isaac/config/vary.yaml
++++ b/exts/ogmp_isaac/config/vary.yaml
+@@ -9,7 +9,4 @@
+ 
+ #  list mode (set as default)
+ v0:
+-  environment_cfg/robot_model: HECTOR_V1P5
+-v1:
+   environment_cfg/robot_model: BERKELEY_HUMANOID
+-  environment_cfg/oracle/params/nominal_height: 0.515

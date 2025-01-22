@@ -1,0 +1,160 @@
+--- git status ---
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   exts/ogmp_isaac/config/base.yaml
+	modified:   exts/ogmp_isaac/config/vary.yaml
+	modified:   scripts/rsl_rl/play.py
+	modified:   scripts/rsl_rl/train.py
+
+no changes added to commit (use "git add" and/or "git commit -a") 
+
+
+--- git diff ---
+diff --git a/exts/ogmp_isaac/config/base.yaml b/exts/ogmp_isaac/config/base.yaml
+index c2649f8..f0b593f 100644
+--- a/exts/ogmp_isaac/config/base.yaml
++++ b/exts/ogmp_isaac/config/base.yaml
+@@ -1,17 +1,17 @@
+-run_name: release_exps
++run_name: h1_2kick
+ env_name: Soccer-v0
+ 
+ ### Environment configuration ###
+ environment_cfg:
+   seed: 42
+-  robot_model: HECTOR_V1P5_DC
++  robot_model: H1_DC
+   env_dt: 0.033333
+-  episode_length_s: 15.0
++  episode_length_s: 25.0
+   omni_direction_lim:
+   - 0.0
+   - 0.0
+-  ball_start: 1.0
+-  target: 3.0
++  ball_start: 3.0
++  target: 6.0
+   drag_coeff: 0.5
+   rewards:
+     base_pos:
+@@ -31,7 +31,7 @@ environment_cfg:
+       exp_scale: 10.0
+     torque_rate_norm:
+       weight: 0.1
+-      exp_scale: 25.0
++      exp_scale: 10.0
+     joint_vel_norm:
+       weight: 0.1
+       exp_scale: 10.0
+@@ -65,9 +65,7 @@ environment_cfg:
+       speed: 1.0
+       reach_thresh: 0.4
+       detach_thresh: 0.4
+-      nominal_height: 0.5
+-
+-### Agent configuration ###
++      nominal_height: 1.05
+ agent_cfg:
+   max_iterations: 10000
+   policy:
+diff --git a/exts/ogmp_isaac/config/vary.yaml b/exts/ogmp_isaac/config/vary.yaml
+index 24b89c6..f3d3d0c 100644
+--- a/exts/ogmp_isaac/config/vary.yaml
++++ b/exts/ogmp_isaac/config/vary.yaml
+@@ -1,3 +1,24 @@
+-environment_cfg/robot_model:
+-- HECTOR_V1P5
+-- BERKELEY_HUMANOID
+\ No newline at end of file
++
++agent_cfg/policy:
++- {
++    class_name: ActorCriticRecurrent,
++    init_noise_std: 1.0,
++    actor_hidden_dims: [200, 100],
++    critic_hidden_dims: [200, 100],
++    activation: elu,
++    rnn_type: lstm,
++    rnn_hidden_size: 128,
++    rnn_num_layers: 1,
++
++  }
++- {
++    class_name: ActorCriticRecurrent,
++    init_noise_std: 1.0,
++    actor_hidden_dims: [400, 200, 100],
++    critic_hidden_dims: [400, 200, 100],
++    activation: elu,
++    rnn_type: lstm,
++    rnn_hidden_size: 256,
++    rnn_num_layers: 1,
++
++  }
+\ No newline at end of file
+diff --git a/scripts/rsl_rl/play.py b/scripts/rsl_rl/play.py
+index 64a8992..fdbf364 100644
+--- a/scripts/rsl_rl/play.py
++++ b/scripts/rsl_rl/play.py
+@@ -45,7 +45,7 @@ from typing import Any
+ 
+ from rsl_rl.runners import OnPolicyRunner
+ 
+-from omni.isaac.lab.envs import DirectMARLEnv, multi_agent_to_single_agent
++# from omni.isaac.lab.envs import DirectMARLEnv, multi_agent_to_single_agent
+ from omni.isaac.lab.utils.dict import print_dict
+ from omni.isaac.lab_tasks.utils import get_checkpoint_path, parse_env_cfg
+ from omni.isaac.lab_tasks.utils.wrappers.rsl_rl import (
+@@ -165,8 +165,8 @@ def main():
+         env = gym.wrappers.RecordVideo(env, **video_kwargs)
+ 
+     # convert to single-agent instance if required by the RL algorithm
+-    if isinstance(env.unwrapped, DirectMARLEnv):
+-        env = multi_agent_to_single_agent(env)
++    # if isinstance(env.unwrapped, DirectMARLEnv):
++    #     env = multi_agent_to_single_agent(env)
+ 
+     # wrap around environment for rsl-rl
+     env = RslRlVecEnvWrapper(env)
+diff --git a/scripts/rsl_rl/train.py b/scripts/rsl_rl/train.py
+index fb1bd12..1af69ba 100644
+--- a/scripts/rsl_rl/train.py
++++ b/scripts/rsl_rl/train.py
+@@ -61,11 +61,11 @@ from datetime import datetime
+ from rsl_rl.runners import OnPolicyRunner
+ 
+ from omni.isaac.lab.envs import (
+-    DirectMARLEnv,
+-    DirectMARLEnvCfg,
++    # DirectMARLEnv,
++    # DirectMARLEnvCfg,
+     DirectRLEnvCfg,
+     ManagerBasedRLEnvCfg,
+-    multi_agent_to_single_agent,
++    # multi_agent_to_single_agent,
+ )
+ from omni.isaac.lab.utils.dict import print_dict
+ from omni.isaac.lab.utils.io import dump_pickle, dump_yaml
+@@ -141,7 +141,7 @@ def custom_update_class_from_dict(obj, data: dict[str, Any], _ns: str = "") -> N
+ 
+ 
+ @hydra_task_config(args_cli.task, "rsl_rl_cfg_entry_point")
+-def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agent_cfg: RslRlOnPolicyRunnerCfg):
++def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg, agent_cfg: RslRlOnPolicyRunnerCfg):
+     """Train with RSL-RL agent."""
+     # parse configuration
+     run_name = None
+@@ -199,8 +199,8 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
+         env = gym.wrappers.RecordVideo(env, **video_kwargs)
+ 
+     # convert to single-agent instance if required by the RL algorithm
+-    if isinstance(env.unwrapped, DirectMARLEnv):
+-        env = multi_agent_to_single_agent(env)
++    # if isinstance(env.unwrapped, DirectMARLEnv):
++    #     env = multi_agent_to_single_agent(env)
+ 
+     # wrap around environment for rsl-rl
+     env = RslRlVecEnvWrapper(env)
