@@ -29,36 +29,64 @@ Authors: Prashanth Ravichandar, Lokesh Krishna, Nikhil Sobanbabu and Quan Nguyen
       python -m pip install -e exts/ogmp_isaac
       ```
 
-## Generate Configurations
 
-Generate the training configurations using the command below. They are saved by default in the `logs/<environment-name>/<experiment-name>/<variant-name>` directory. For example:
-```
-python scripts/experiment/generate.py --base_path ./exts/ogmp_isaac/config/soccer_base.yaml --vary_path ./exts/ogmp_isaac/config/soccer_vary.yaml
-```
+## Testing
 
-NOTE: The USD for Berkeley Humanoid is not included in this repository. Please download the USD from [their repository](https://github.com/HybridRobotics/isaac_berkeley_humanoid) repository and place it in the `exts/ogmp_isaac/assets/robots/berkeley_humanoid/biped` directory.
+To play with our best pre-trained models or a custom-trained model run 
 
-## Training
-
-1. Deploy all variants using the command below. This will run each variant in the experiment folder. Default is headless mode with 4096 environments.
-      ```
-      python scripts/experiment/deploy.py --exp_logpath ./logs/soccer/release_experiments
-      ```
-2. To train a single variant:
-      ```
-      python scripts/rsl_rl/train.py --yaml_config ./logs/soccer/release_experiments/H1_DC/exp_conf.yaml --headless
-      ```
-
-## Evaluation
-
-To evaluate the trained model:
 ```
 python scripts/rsl_rl/play.py --yaml_config ./logs/soccer/release_experiments/H1_DC/exp_conf.yaml --num_envs 1 --visualize --visualize_goalpost
 ```
 
+This command should run our policy trained for H1 robot playing soccer. All our pretrained policies are available in `./logs/` and ready to play with !
+
+## Training
+
+Each task in the paper has different robot variants, Hence in `exts/ogmp_isaac/config`, for each task we have a 
+* **<task_name>_base.yaml**: common hyper-paramters like rewards defintion , reward weights, network architecture, etc 
+* **<task_name>_vary.yaml**:  different robots with corresponding kinematic and dynamics paramters. 
+
+in a reader-firendly manner. To then generate a training ready config for a task (say soccer), run 
+```
+python scripts/experiment/generate.py --base_path ./exts/ogmp_isaac/config/soccer_base.yaml --vary_path ./exts/ogmp_isaac/config/soccer_vary.yaml
+```
+
+This permutes the base configuration with the variants and generates a custom training log folder with each variant's config in the `./log` directory with the followying structure.
+
+```
+<experiment_name>
+
+      - <variant_0>
+
+            - exp_conf.yaml
+
+      - <variant_1>
+
+            - exp_conf.yaml
+            .
+            .
+            .
+```
+
+The training can now be deployed in one of two ways,
+
+1. **Deploy all at once**: To automatically train one variant after another in the experiment folder. 
+      ```
+      python scripts/experiment/deploy.py --exp_logpath ./logs/soccer/release_experiments
+      ```
+2. **Deploy one**: To train a single variant:
+      ```
+      python scripts/rsl_rl/train.py --yaml_config ./logs/soccer/release_experiments/H1_DC/exp_conf.yaml --headless
+      ```
+
+NOTE: 
+* Default is training is done in headless mode with 4096 environments.
+* The USD for Berkeley Humanoid is not included in this repository. Please download the USD from [their repository](https://github.com/HybridRobotics/isaac_berkeley_humanoid) repository and place it in the `exts/ogmp_isaac/assets/robots/berkeley_humanoid/biped` directory.
+
 # Citation
 
 If you use this code, please cite the following paper:
+
 ```
 @misc{ravichandar2024dynamicbipedallocomanipulationusing,
       title={Dynamic Bipedal Loco-manipulation using Oracle Guided Multi-mode Policies with Mode-transition Preference}, 
