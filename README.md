@@ -5,25 +5,15 @@
 [![Python](https://img.shields.io/badge/python-3.10-blue.svg)](https://docs.python.org/3/whatsnew/3.10.html)
 [![Linux platform](https://img.shields.io/badge/platform-linux--64-orange.svg)](https://releases.ubuntu.com/20.04/)
 
-<div style="text-align: center; border: none;">
-  <table>
-    <tr>
-      <td style="border: none;"><img src="./media/bh_soccer_crop.gif" alt="Berkeley Humanoid playing soccer" width="225"/></td>
-      <td style="border: none;"><img src="./media/g1_soccer_crop_online.gif" alt="G1 playing soccer" width="225"/></td>
-      <td style="border: none;"><img src="./media/h1_soccer_crop.gif" alt="H1 playing soccer" width="225"/></td>
-      <!-- <td><video autoplay muted loop playsinline controls src="./media/bh_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td>
-      <td><video autoplay muted loop playsinline controls src="./media/g1_soccer_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
-      <td><video autoplay muted loop playsinline controls src="./media/h1_soccer_crop.mp4" style="border-radius:10px;width:30"></video></td> -->
-    </tr>
-    <tr>
-      <td style="border: none;"><img src="./media/bh_box_crop.gif" alt="Berkeley Humanoid pushing box" width="225"/></td>
-      <td style="border: none;"><img src="./media/g1_box_crop_online.gif" alt="G1 pushing box" width="225"/></td>
-      <td style="border: none;"><img src="./media/h1_box_crop_online.gif" alt="H1 pushing box" width="225"/></td>
-      <!-- <td><video autoplay muted loop playsinline controls src="./media/bh_box_crop.mp4" style="border-radius:10px;width:30"></video></td>
-      <td><video autoplay muted loop playsinline controls src="./media/g1_box_crop_online.mp4" style="border-radius:10px;width:30"></video></td>
-      <td><video autoplay muted loop playsinline controls src="./media/h1_box_crop_online.mp4" style="border-radius:10px;width:30"></video></td> -->
-    </tr>
-  </table>
+<div>
+      <img src="./media/bh_soccer_crop.gif" alt="Berkeley Humanoid playing soccer" width="225"/>
+      <img src="./media/g1_soccer_crop_online.gif" alt="G1 playing soccer" width="225"/>
+      <img src="./media/h1_soccer_crop.gif" alt="H1 playing soccer" width="225"/>
+</div>
+<div>
+      <img src="./media/bh_box_crop.gif" alt="Berkeley Humanoid pushing box" width="225"/>
+      <img src="./media/g1_box_crop_online.gif" alt="G1 pushing box" width="225"/>
+      <img src="./media/h1_box_crop_online.gif" alt="H1 pushing box" width="225"/>
 </div>
 
 This repository contains the code for the experiments in the paper - [Dynamic Bipedal Loco-manipulation using Oracle Guided Multi-mode Policies with Mode-transition Preference](https://arxiv.org/abs/2410.01030). Check out the project [website](https://indweller.github.io/ogmplm/) for more details.
