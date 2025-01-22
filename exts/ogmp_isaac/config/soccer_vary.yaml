@@ -1,0 +1,23 @@
+v0:
+  environment_cfg/robot_model: BERKELY_HUMANOID
+  environment_cfg/episode_length_s: 15.0
+  environment_cfg/ball_start: 1.0
+  environment_cfg/target: 3.0
+  environment_cfg/oracle/params/speed: 0.8
+  environment_cfg/oracle/params/nominal_height: 0.515
+
+v1:
+  environment_cfg/robot_model: G1_DC
+  environment_cfg/episode_length_s: 25.0
+  environment_cfg/ball_start: 3.0
+  environment_cfg/target: 6.0
+  environment_cfg/oracle/params/speed: 1.0
+  environment_cfg/oracle/params/nominal_height: 0.74
+
+v2:
+  environment_cfg/robot_model: H1_DC
+  environment_cfg/episode_length_s: 25.0
+  environment_cfg/ball_start: 3.0
+  environment_cfg/target: 6.0
+  environment_cfg/oracle/params/speed: 1.0
+  environment_cfg/oracle/params/nominal_height: 1.05
