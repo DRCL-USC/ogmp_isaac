@@ -16,7 +16,8 @@
       <img src="./media/h1_box.gif" alt="H1 pushing box" width="250" style="margin-right: 10px; margin-bottom: 10px;"/>
 </div>
 
-This repository contains the code for the experiments in the paper - [Dynamic Bipedal Loco-manipulation using Oracle Guided Multi-mode Policies with Mode-transition Preference](https://arxiv.org/abs/2410.01030). Check out the project [website](https://indweller.github.io/ogmplm/) for more details.
+This repository contains the code for the experiments in the paper - [Preferenced Oracle Guided Multi-mode Policies for Dynamic Bipedal Loco-Manipulation
+](https://arxiv.org/abs/2410.01030). Check out the project [website](https://indweller.github.io/ogmplm/) for more details.
 
 Authors: Prashanth Ravichandar, Lokesh Krishna, Nikhil Sobanbabu and Quan Nguyen
 
@@ -84,10 +85,10 @@ NOTE:
 If you use this code, please cite the following paper:
 
 ```
-@misc{ravichandar2024dynamicbipedallocomanipulationusing,
-      title={Dynamic Bipedal Loco-manipulation using Oracle Guided Multi-mode Policies with Mode-transition Preference}, 
+@misc{ravichandar2025preferencedoracleguidedmultimode,
+      title={Preferenced Oracle Guided Multi-mode Policies for Dynamic Bipedal Loco-Manipulation}, 
       author={Prashanth Ravichandar and Lokesh Krishna and Nikhil Sobanbabu and Quan Nguyen},
-      year={2024},
+      year={2025},
       eprint={2410.01030},
       archivePrefix={arXiv},
       primaryClass={cs.RO},
